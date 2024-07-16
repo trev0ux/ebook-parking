@@ -17,11 +17,6 @@ export default defineNuxtConfig({
       }
     }
   },
-  nitro: {
-    routeRules: {
-      "/api/**": { proxy: "https://pms.double.pt/api/**", cors: false },
-    },
-  },
   css: [{ src: '~/assets/styles/globals.scss', lang: 'sass' }],
   app: {
     head: {
@@ -40,14 +35,7 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-    'nuxt-icon',
+    '@nuxt/icon',
     '@nuxt/image'
   ],
-  proxy: {
-    '/api/': {
-      target: 'https://pms.double.pt',
-      pathRewrite: { '^/api/': '' },
-      changeOrigin: true
-    }
-  },
 })
