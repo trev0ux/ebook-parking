@@ -1,0 +1,74 @@
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  tag: 'latest'
+  containerRegistry: 'registry.double.pt'
+  image: 'eBookParking-nuxt-uat'
+  container: $(image)
+  NODE_ENV: 'development'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+
+    - task: Docker@2
+      displayName: Build Frontend
+      inputs:
+        containerRegistry: $(containerRegistry)
+        repository: $(image)
+        command: "build"
+        Dockerfile: "**/frontend/react-umbraco/Dockerfile"
+        tags: |
+          $(tag)
+        arguments: "--build-arg NODE_ENV=$(NODE_ENV)"
+
+    - task: Docker@2
+      displayName: Push Frontend
+      inputs:
+        command: push
+        repository: $(image)
+        containerRegistry: $(containerRegistry)
+        tags: |
+          $(tag)
+          
+
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'SSH SSDNode'
+        runOptions: 'inline'
+        inline: |
+          # Suppress STDERR messages,  
+          cd /docker/clients/autostallingdebazuin
+
+          docker kill $(container) || true
+          docker rm $(container) || true
+          docker image rm $(containerRegistry)/$(image) || true
+
+          docker login -u azuredevops -p $(docker_login) $(containerRegistry)
+          OUTPUT_MESSAGE=$(docker-compose up -d  2>&1)
+          docker logout $(containerRegistry)
+          
+          #Handle exit code
+          
+          if [ $? -eq 0 ]
+          then
+            echo $OUTPUT_MESSAGE
+            echo "Deployed successfully"
+            exit 0
+          else
+            echo "Deployment failed" 
+            echo $OUTPUT_MESSAGE
+            exit 1
+          fi
+        failOnStdErr: false
+        readyTimeout: '20000'
