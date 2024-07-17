@@ -13,15 +13,10 @@ WORKDIR /app
 COPY . .
 
 # Build the NuxtJS application, including devDependencies and create a production build
-RUN npm ci && \
-    npx nuxt build
+RUN npm ci
+RUN npm run build
+RUN npm prune
 
-# Build the NuxtJS application in production mode
-RUN rm -rf node_modules && \
-    npm i --ignore-scripts --omit=dev
-
-# Prune the libraries or skip
-RUN find libs -mindepth 2 -maxdepth 2 -name dist -o -name package.json -prune -o -exec rm -rf {} + || true
 
 # The runner stage
 # This is the final image that will be used when running the Docker container
@@ -39,22 +34,8 @@ ENV NODE_ENV production
 # Create a separate folder for the application to live in
 WORKDIR /app
 
-# Copy libs and prune the source
-COPY --from=builder /app/libs ./libs
-
-# Copy the NPM modules
-COPY --from=builder /app/node_modules ./node_modules
-
-# Copy the custom runtime files from the builder
-COPY --from=builder /app/modules ./modules
-COPY --from=builder /app/middleware ./middleware
-
-# Copy the NuxtJS configuration for start-up and runtime configuration settings from the builder
-COPY --from=builder /app/nuxt.config.js ./nuxt.config.js
-
-# Copy the entire NuxtJS application from the builder
-COPY --from=builder /app/.nuxt ./.nuxt
-COPY --from=builder /app/static ./static
+# Copy all the files
+COPY --from=builder . .
 
 # Expose port 3000 for the docker containers
 EXPOSE 3000
