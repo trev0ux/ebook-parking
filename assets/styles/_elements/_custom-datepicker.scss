@@ -1,0 +1,36 @@
+.dp {
+    &__main {
+        display: inline;
+    }
+    &__menu {
+        box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
+        border-radius: 12px;
+        background-color: #ededed;
+    }
+
+    &__inner_nav {
+        color: #F93;
+    }
+
+    &__calendar_header_item {
+        text-transform: uppercase;
+    }
+
+    &__month_year_select {
+        font-weight: $font-weight--bold;
+        text-transform: uppercase;
+    }
+
+    &__theme_light {
+        --dp-menu-border-color: none;
+        --dp-text-color: #312783 !important;
+        --dp-primary-color: #312783 !important;
+        --dp-range-between-dates-background-color: #c9c9c9 !important;
+
+        @include media-breakpoint-down(md) {
+            --dp-menu-border-color: #ddd;
+            --dp-font-size: 14px;
+            box-shadow: none;
+        }
+    }
+}

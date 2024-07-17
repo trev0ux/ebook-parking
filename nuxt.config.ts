@@ -1,23 +1,15 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  render: {
-    csp: {
-      reportOnly: false,
-      policies: {
-        'script-src': [
-          "'self'",
-          'https:',
-          "'unsafe-inline'",
-          "'unsafe-eval'", // Add this line
-          "'strict-dynamic'",
-          "'nonce-lYJC0UCk24D6+PTa1yON6g=='"
-        ]
-      }
-    }
+
+  axios: {
+    baseURL: 'https://equidado-008c032b8ff0.herokuapp.com',
+    proxyHeaders: false,
+    credentials: false,
   },
+
   css: [{ src: '~/assets/styles/globals.scss', lang: 'sass' }],
+
   app: {
     head: {
       title: "Ebook Parking",
@@ -28,14 +20,18 @@ export default defineNuxtConfig({
             "sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa",
           crossorigin: "anonymous",
         },
-        {
-          src: "https://player.vimeo.com/api/player.js",
-        },
       ],
     }
   },
+
   modules: [
     '@nuxt/icon',
     '@nuxt/image'
   ],
+
+  plugins: [
+    '@/plugins/vue-datepicker',
+    '~/plugins/date-fns'
+  ],
+  compatibilityDate: '2024-07-16'
 })

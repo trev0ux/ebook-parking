@@ -1,0 +1,27 @@
+.custom-accordion {
+    background-color: #ededed;
+    border-radius: 12px !important;
+    padding: 25px 25px 4px;
+
+    &__header {
+        color: $primary;
+
+        button {
+            padding-bottom: 16px;
+            @include font-size($font-regular);
+            font-weight: $font-weight--bold;
+            &:not(.collapsed) {
+                border-bottom: 1px solid $white;
+            }
+        }
+    }
+
+    &__body {
+        margin-top: 32px;
+
+        p {
+            color: #8885a2;
+            @include font-size($font-regular);
+        }
+    }
+}

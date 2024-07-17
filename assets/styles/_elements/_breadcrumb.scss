@@ -1,0 +1,15 @@
+.breadcrumb {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+        a {
+            @include font-size($font-small);
+            color: #f93;
+            text-decoration: none;
+        }
+    }
+}

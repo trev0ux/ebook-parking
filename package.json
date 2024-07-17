@@ -10,6 +10,8 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@vuepic/vue-datepicker": "^9.0.0",
+    "date-fns": "^3.6.0",
     "nuxt": "^3.12.3",
     "vue": "latest"
   },
