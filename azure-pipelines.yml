@@ -27,7 +27,7 @@ stages:
         containerRegistry: $(containerRegistry)
         repository: $(image)
         command: "build"
-        Dockerfile: "**/frontend/react-umbraco/Dockerfile"
+        Dockerfile: "**/Dockerfile"
         tags: |
           $(tag)
         arguments: "--build-arg NODE_ENV=$(NODE_ENV)"
