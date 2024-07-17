@@ -20,8 +20,8 @@ RUN npm ci && \
 RUN rm -rf node_modules && \
     npm i --ignore-scripts --omit=dev
 
-# Prune the libraries
-RUN find libs -mindepth 2 -maxdepth 2 -name dist -o -name package.json -prune -o -exec rm -rf {} +
+# Prune the libraries or skip
+RUN find libs -mindepth 2 -maxdepth 2 -name dist -o -name package.json -prune -o -exec rm -rf {} + || true
 
 # The runner stage
 # This is the final image that will be used when running the Docker container
@@ -32,8 +32,9 @@ RUN find libs -mindepth 2 -maxdepth 2 -name dist -o -name package.json -prune -o
 # 4. Setting container variables
 # 5. Defining the start-up command
 FROM node:18-alpine as runner
+
 # Since this is the final image, we want to build in production mode
-ENV NODE_ENV=PRODUCTION
+ENV NODE_ENV production
 
 # Create a separate folder for the application to live in
 WORKDIR /app
