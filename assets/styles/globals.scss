@@ -8,12 +8,12 @@ body {
 
 
 .btn-primary {
-  color: #ededed;
-    background: #c9c9c9 !important;
+  color: $white-edgar;
+    background: $unique-grey !important;
     text-transform: uppercase;
     font-weight: $font-weight--bold;
     @include font-size($font-regular);
-    border-color: #c9c9c9 ;
+    border-color: $unique-grey ;
     padding: 8px 42px;
     transform: translateZ(0);
     backface-visibility: hidden;
@@ -22,7 +22,7 @@ body {
     transition-duration: .3s;
 
     &:hover {
-      border-color: #F93;
+      border-color: $saffron;
       &:before {
         transform: scaleX(1);  
       }
@@ -36,7 +36,7 @@ body {
       right: 0;
       bottom: 0;      
       position: absolute;
-      background: #F93;
+      background: $saffron;
       transform: scaleX(0);
       transform-origin: 0 50%;
       transition-property: transform;

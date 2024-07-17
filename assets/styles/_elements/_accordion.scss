@@ -1,5 +1,5 @@
 .custom-accordion {
-    background-color: #ededed;
+    background-color: $white-edgar;
     border-radius: 12px !important;
     padding: 25px 25px 4px;
 
@@ -20,7 +20,7 @@
         margin-top: 32px;
 
         p {
-            color: #8885a2;
+            color: $mandrake;
             @include font-size($font-regular);
         }
     }

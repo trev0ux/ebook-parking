@@ -8,7 +8,7 @@
     li {
         a {
             @include font-size($font-small);
-            color: #f93;
+            color: $saffron;
             text-decoration: none;
         }
     }
