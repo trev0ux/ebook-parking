@@ -13,16 +13,15 @@ body {
     text-transform: uppercase;
     font-weight: $font-weight--bold;
     @include font-size($font-regular);
-    border-color: $unique-grey ;
-    padding: 8px 42px;
+    padding: 12px 42px;
     transform: translateZ(0);
     backface-visibility: hidden;
     position: relative;
     transition-property: color;
     transition-duration: .3s;
+    border: none;
 
     &:hover {
-      border-color: $saffron;
       &:before {
         transform: scaleX(1);  
       }

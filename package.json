@@ -10,7 +10,9 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxtjs/axios": "^5.13.6",
     "@vuepic/vue-datepicker": "^9.0.0",
+    "axios": "^1.7.2",
     "date-fns": "^3.6.0",
     "nuxt": "^3.12.3",
     "vue": "latest"
@@ -19,6 +21,7 @@
     "@nuxt/icon": "^1.1.1",
     "@nuxt/image": "^1.7.0",
     "bootstrap": "^5.3.3",
+    "http-proxy-middleware": "^3.0.0",
     "rfs": "^10.0.0",
     "sass": "^1.77.8",
     "sass-loader": "^14.2.1"

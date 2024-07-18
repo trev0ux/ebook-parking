@@ -8,7 +8,7 @@
 
         button {
             padding-bottom: 16px;
-            @include font-size($font-regular);
+            @include font-size($font-small);
             font-weight: $font-weight--bold;
             &:not(.collapsed) {
                 border-bottom: 1px solid $white;
@@ -17,11 +17,11 @@
     }
 
     &__body {
-        margin-top: 32px;
+        margin-top: 16px;
 
         p {
             color: $mandrake;
-            @include font-size($font-regular);
+            @include font-size($font-small);
         }
     }
 }

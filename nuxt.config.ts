@@ -1,13 +1,5 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-
-  axios: {
-    baseURL: 'https://equidado-008c032b8ff0.herokuapp.com',
-    proxyHeaders: false,
-    credentials: false,
-  },
-
   css: [{ src: '~/assets/styles/globals.scss', lang: 'sass' }],
 
   app: {
@@ -24,14 +16,22 @@ export default defineNuxtConfig({
     }
   },
 
+  runtimeConfig: {
+    public: {
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_URL
+    }
+  },
+
   modules: [
     '@nuxt/icon',
-    '@nuxt/image'
+    '@nuxt/image',
   ],
 
   plugins: [
     '@/plugins/vue-datepicker',
-    '~/plugins/date-fns'
+    '~/plugins/date-fns',
+    '@/plugins/axios'
   ],
-  compatibilityDate: '2024-07-16'
+
+  compatibilityDate: '2024-07-18',
 })

@@ -10,6 +10,11 @@
 
 .container {
     max-width: 1000px;
+    padding: 20px 150px;
+
+    @include media-breakpoint-down(md) {
+        padding: 20px 15px;
+    }
 }
 
 .reserve-page {
@@ -33,7 +38,7 @@
         max-width: 305px;
 
         h3 {
-            color: $light-black;
+            color: $black;
             @include font-size($font-xxx-big);
             font-weight: $font-weight--bold;
             margin-bottom: 8px;
@@ -51,7 +56,7 @@
         align-items: center;
         margin-top: 38px;
 
-        button {
+        > button {
             margin-top: 32px;
         }
 
@@ -72,34 +77,35 @@
             margin-bottom: 16px;
         }
 
-        p {
-            @include font-size($font-regular);
+        h1 {
+            @include font-size($font-small);
             font-weight: $font-weight--bold;
             color: $primary;
             margin-bottom: 16px;
 
             @include media-breakpoint-down(md) {
-                margin-bottom: 0;
+                margin-bottom: 0 !important;
             }
+        }
+    }
+
+    &__date-field {
+        display: flex;
+        justify-content: center;
+        border: 2px solid $white-edgar;
+        border-radius: 10px;
+
+        @include media-breakpoint-down(md) {
+            display: none;
         }
 
         > div {
-            display: flex;
-            justify-content: center;
-            border: 2px solid $white-edgar;
-            border-radius: 10px;
+            padding: 8px 32px;
+            color: $primary;
+            @include font-size($font-small);
 
-            @include media-breakpoint-down(md) {
-                display: none;
-            }
-
-            > div {
-                padding: 8px 32px;
-                color: $primary;
-
-                &:first-of-type {
-                    border-right: 2px solid $white-edgar;
-                }
+            &:first-of-type {
+                border-right: 2px solid $white-edgar;
             }
         }
     }
