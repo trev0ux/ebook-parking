@@ -5,17 +5,7 @@
 @import "bootstrap/scss/mixins/_breakpoints";
 @import "../_elements/_custom-datepicker";
 @import "../_elements/_breadcrumb";
-@import "../_elements/_accordion";
 
-
-.container {
-    max-width: 1000px;
-    padding: 20px 150px;
-
-    @include media-breakpoint-down(md) {
-        padding: 20px 15px;
-    }
-}
 
 .reserve-page {
     &__banner {

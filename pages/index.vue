@@ -14,34 +14,13 @@
     </div>
     <article class="reserve-page__main-content">
       <div class="container">
-        <div class="custom-accordion accordion-item">
-          <h4
-            class="custom-accordion__header"
-            v-if="content && content.properties"
-          >
-            <button
-              class="accordion-button collapsed"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#collapseOne"
-              aria-expanded="false"
-              aria-controls="collapseOne"
-            >
-              {{ content.properties.accordionTitle }}
-            </button>
-          </h4>
-          <div
-            id="collapseOne"
-            class="accordion-collapse collapse custom-accordion__body"
-            aria-labelledby="headingOne"
-            data-bs-parent="#accordionExample"
-            v-if="content && content.properties"
-          >
-            <div
-              class="accordion-body"
-              v-html="content.properties.accordionContent.markup"
-            ></div>
-          </div>
+        <div class="accordion" id="reserveAcordion"  v-if="content && content.properties">
+          <custom-accordion
+            :title="content.properties.accordionTitle"
+            :description="content.properties.accordionContent.markup"
+            item-id="collapse1"
+            parent-id="reserveAcordion"
+          />
         </div>
         <form class="reserve-page__calendar" @submit.prevent="submitBooking">
           <div class="reserve-page__date-selected">
@@ -59,9 +38,10 @@
             range
             inline
             model-auto
+            locale="nl"
             :enable-time-picker="false"
-            :format="format"
-            locale="de"
+            :format="defaultFormat"
+            :preview-format="defaultFormat"
             :multi-calendars="{ count: 2 }"
             :start-date="startDate"
             focus-start-date
@@ -78,41 +58,30 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useNuxtApp } from "#app";
-import { addDays } from "date-fns";
+import { addDays, format } from "date-fns";
+import CustomAccordion from "../components/custom-accordion.vue";
+
 const { $axios } = useNuxtApp();
-
-const dateRange = ref([]);
+const dateRange = ref(new Date());
 const content = ref({});
-const dateTest = ref([]);
-
-const { $format } = useNuxtApp();
+const defaultFormat = "dd-MM-yyyy";
 
 const startDate = computed(() => {
   const now = new Date();
   return new Date(now.getFullYear(), now.getMonth(), 1);
 });
 
-const format = ref("dd-MM-yyyy");
-
 const formattedDateRange = computed(() => {
   if (!dateRange.value || dateRange.value.length !== 2) {
     const today = new Date();
-    const nextDay = addDays(today, 1);
-    dateTest.value = [
-      $format(today, "yyyy-MM-dd"),
-      $format(nextDay, "yyyy-MM-dd"),
+    return [
+      format(today, defaultFormat),
+      format(addDays(today, 1), defaultFormat),
     ];
-
-    return dateTest.value.map((date) => {
-      if (!date) return "";
-      return $format(new Date(date), "dd-MM-yyyy");
-    });
   }
-
-  return dateRange.value.map((date) => {
-    if (!date) return "";
-    return $format(new Date(date), "dd-MM-yyyy");
-  });
+  return dateRange.value.map((date) =>
+    date ? format(new Date(date), defaultFormat) : ""
+  );
 });
 
 const submitBooking = async () => {
@@ -124,8 +93,8 @@ const submitBooking = async () => {
   let url = "/api/parking-availability/Get";
 
   try {
-    const response = await $axios.post(url, bookingData);
-    console.log(response);
+    this.$router.push({ name: 'AvailablePlaces' });
+    await $axios.post(url, bookingData);
   } catch (error) {
     console.error("Error:", error);
   }
@@ -137,7 +106,6 @@ const getReserveContent = async () => {
   try {
     const response = await $axios.get(url);
     content.value = response.data;
-    console.log(content.value.properties);
   } catch (error) {
     console.error("Error:", error);
   }

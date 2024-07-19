@@ -6,6 +6,15 @@ body {
   font-family: $font-family--primary;
 }
 
+.container {
+  max-width: 1000px;
+  padding: 20px 150px;
+
+  @include media-breakpoint-down(md) {
+      padding: 20px 15px;
+  }
+}
+
 
 .btn-primary {
   color: $white-edgar;

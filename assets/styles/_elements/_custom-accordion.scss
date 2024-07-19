@@ -1,17 +1,35 @@
+@import "../_base/typography";
+@import "../_base/variables";
+@import "bootstrap/scss/_functions";
+@import "bootstrap/scss/_variables";
+@import "bootstrap/scss/mixins/_breakpoints";
+
 .custom-accordion {
     background-color: $white-edgar;
     border-radius: 12px !important;
     padding: 25px 25px 4px;
+    border: none;
 
     &__header {
         color: $primary;
 
         button {
-            padding-bottom: 16px;
+            padding: 0 0 16px 0;
             @include font-size($font-small);
             font-weight: $font-weight--bold;
+            border: none;
+            background-color: transparent;
+            transition: none;
+            box-shadow: none;
+            color: $primary;
+
+            &:after {
+                content: initial;
+            }
+            
             &:not(.collapsed) {
                 border-bottom: 1px solid $white;
+                background-color: transparent;
             }
         }
     }

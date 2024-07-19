@@ -1,7 +1,8 @@
+import axios from 'axios'
+
 export default defineNuxtConfig({
   devtools: { enabled: true },
   css: [{ src: '~/assets/styles/globals.scss', lang: 'sass' }],
-
   app: {
     head: {
       title: "Ebook Parking",
@@ -29,7 +30,6 @@ export default defineNuxtConfig({
 
   plugins: [
     '@/plugins/vue-datepicker',
-    '~/plugins/date-fns',
     '@/plugins/axios'
   ],
 
