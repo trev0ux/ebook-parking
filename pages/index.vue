@@ -57,11 +57,10 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { useNuxtApp } from "#app";
 import { addDays, format } from "date-fns";
 import CustomAccordion from "../components/custom-accordion.vue";
+import { getReservePage, postReserveData } from "@/services/api.ts";
 
-const { $axios } = useNuxtApp();
 const dateRange = ref(new Date());
 const content = ref({});
 const defaultFormat = "dd-MM-yyyy";
@@ -90,22 +89,19 @@ const submitBooking = async () => {
     leaveDate: dateRange.value[1],
   };
 
-  let url = "/api/parking-availability/Get";
-
   try {
+    await postReserveData(bookingData);
     this.$router.push({ name: 'AvailablePlaces' });
-    await $axios.post(url, bookingData);
   } catch (error) {
     console.error("Error:", error);
   }
 };
 
 const getReserveContent = async () => {
-  let url = "/umbraco/delivery/api/v2/content/item/reserveer-nu/";
-
   try {
-    const response = await $axios.get(url);
-    content.value = response.data;
+    const response = await getReservePage();
+    content.value = response;
+    console.log(content.value)
   } catch (error) {
     console.error("Error:", error);
   }
