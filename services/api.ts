@@ -2,21 +2,24 @@ import { useNuxtApp } from "#app";
 
 
 export const fetchRoutes = async () => {
-    const { $axios } = useNuxtApp();
-
-    const response = await $axios.get('/umbraco/delivery/api/v2/content?fetch=descendants%3A%2F&skip=0&take=10&fields=properties%5Burl%5D')
-    return response.data
+  const { $axios } = useNuxtApp();
+  try {
+    const response = await $axios.get('/umbraco/delivery/api/v2/content?fetch=descendants%3A%2F&skip=0&take=10&fields=properties%5Burl%5D');
+    return response.data.items;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export const fetchPageData = async (endpoint: string, params: object = {}) => {
-    const { $axios } = useNuxtApp();
-    try {
-      const response = await $axios.get(endpoint, { params });
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching data from ${endpoint}:`, error);
-      throw error;
-    }
+  const { $axios } = useNuxtApp();
+  try {
+    const response = await $axios.get(endpoint, { params });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching data from ${endpoint}:`, error);
+    throw error;
+  }
 };
 
 export const postPageData = async (endpoint: string, data: object = {}) => {

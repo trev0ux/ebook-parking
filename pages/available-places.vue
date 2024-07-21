@@ -23,7 +23,7 @@
           />
         </div>
         <form class="available-places__calendar" @submit.prevent="submitBooking">
-
+          
           <button class="btn btn-primary" type="submit">Reserveer Nu</button>
         </form>
       </div>
@@ -34,7 +34,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useNuxtApp } from "#app";
-import CustomAccordion from "../../components/custom-accordion.vue";
+import CustomAccordion from "../components/custom-accordion.vue";
 import { useRoute } from 'nuxt/app'
 
 const route = useRoute()

@@ -2,7 +2,7 @@
 // import { fetchRoutes } from '@/services/api';
 
 // const componentNames = [
-//     'reservation',
+//     'reserving',
 //     'available-places',
 //     'additional-services',
 //     'booking-form'
@@ -11,6 +11,14 @@
 // export default defineNuxtPlugin(async (nuxtApp) => {
 //   const router = useRouter();
 //   const routes = await fetchRoutes();
+
+//   console.log(router.getRoutes());
+
+//   router.getRoutes().forEach((route, i)=>{
+//     router.removeRoute(route.name)
+//  })
+//  console.log(router.getRoutes());
+
 
 //   const newRoutes = routes.map((route, index) => {
 //     const componentName = componentNames[index];
@@ -21,16 +29,19 @@
 //     }
 
 //     return {
-//       name: `route-${index}`, // Optionally, use a unique name for each route
-//       path: route.route.path,
-//       component: () => import(`~/pages/${componentName}.vue`) // Dynamically import the component
+//       name: `${componentName}`, // Optionally, use a unique name for each route
+//       path: index == 0 ? '/' : route.route.path,
+//       component: () => import(`@/pages/${componentName}.vue`), // Dynamically import the component
+//       redirect: `/${componentName}`
 //     };
-//   }).filter(route => route !== null); // Filter out null entries
-
+//   });
 //   // Add dynamic routes to the router
+  
 //   newRoutes.forEach(route => {
 //     router.addRoute(route);
 //   });
+
+//   console.log(newRoutes);
 
 //   console.log('Dynamic routes added:', router.getRoutes());
 // });

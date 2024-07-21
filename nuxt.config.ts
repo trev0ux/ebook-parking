@@ -1,4 +1,3 @@
-import axios from 'axios'
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -30,7 +29,8 @@ export default defineNuxtConfig({
 
   plugins: [
     '@/plugins/vue-datepicker',
-    '@/plugins/axios'
+    '@/plugins/axios',
+    //'@/plugins/dynamic-routes'
   ],
 
   compatibilityDate: '2024-07-18',
