@@ -22,6 +22,9 @@ ENV PORT 3000
 
 ENV NODE_ENV production
 
+# Pass the environment variable to the runner stage
+ENV NUXT_PUBLIC_API_URL=$NUXT_PUBLIC_API_URL
+
 COPY --from=build /src/.output /src/.output
 # Optional, only needed if you rely on unbundled dependencies
 # COPY --from=build /src/node_modules /src/node_modules
