@@ -1,5 +1,6 @@
 @import "./_base/typography";
 @import "./_base/variables";
+@import "./_base/reset";
 @import "bootstrap/scss/bootstrap";
 
 body {
@@ -31,6 +32,7 @@ body {
     border: none;
 
     &:hover {
+      color: $white !important;
       &:before {
         transform: scaleX(1);  
       }
@@ -51,5 +53,22 @@ body {
       transition-duration: .3s;
       transition-timing-function: ease-out;
       border-radius: 8px;
+  }
+}
+
+
+.btn-secondary {
+  color: $white-edgar;
+  background: $unique-grey !important;
+  text-transform: uppercase;
+  font-weight: $font-weight--bold;
+  @include font-size($font-regular);
+  padding: 12px 42px;
+  border: none;
+  transition-property: background-color;
+  transition-duration: .1s;
+
+  &:hover {
+    background-color: $secondary !important;
   }
 }

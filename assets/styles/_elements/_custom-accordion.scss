@@ -11,7 +11,7 @@
     border: none;
 
     &__header {
-        color: $primary;
+        color: $secondary;
 
         button {
             padding: 0 0 16px 0;
@@ -21,7 +21,7 @@
             background-color: transparent;
             transition: none;
             box-shadow: none;
-            color: $primary;
+            color: $secondary !important;
 
             &:after {
                 content: initial;

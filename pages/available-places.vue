@@ -4,17 +4,17 @@
       <div class="container">
         <div class="available-places__details">
           <h3>{{ content.name }}</h3>
-          <ol class="breadcrumb">
-            <li>
-              <a href="#">{{ content.name }}</a>
-            </li>
-          </ol>
+          <Breadcrumb />
         </div>
       </div>
     </div>
     <article class="available-places__main-content">
       <div class="container">
-        <div class="accordion" id="reserveAcordion"  v-if="content && content.properties">
+        <div
+          class="accordion"
+          id="reserveAcordion"
+          v-if="content && content.properties"
+        >
           <custom-accordion
             :title="content.properties.accordionTitle"
             :description="content.properties.accordionContent.markup"
@@ -22,9 +22,51 @@
             parent-id="reserveAcordion"
           />
         </div>
-        <form class="available-places__calendar" @submit.prevent="submitBooking">
-          
-          <button class="btn btn-primary" type="submit">Reserveer Nu</button>
+        <form @submit.prevent="submitPlaces">
+          <section class="available-places__services-form">
+            <div class="available-places__card">
+              <h4>Aantal parkeerplaatsen</h4>
+              <div class="available-places__quantity">
+                <p>Overdekt</p>
+                <div>
+                  <custom-select
+                    label="Aantal auto's"
+                    id="name"
+                    v-bind="$attrs"
+                    v-model="quantity"
+                    :options="quantityOptions"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="available-places__card">
+              <h4>Prijs</h4>
+              <div class="available-places__summary-total">
+                <div>
+                  <p>Overdekt</p>
+                  <h5>€ {{ totalValue }}</h5>
+                </div>
+                <div>
+                  <p>Overdekt</p>
+                  <h5>€ {{ totalValue }}</h5>
+                </div>
+              </div>
+            </div>
+          </section>
+          <div class="available-places__buttons">
+            <NuxtLink class="btn btn-secondary" to="/">Vorige</NuxtLink>
+            <div>
+              <ul class="progress-steps">
+                <li class="progress-steps--previous"></li>
+                <li class="progress-steps--active"></li>
+                <li></li>
+                <li></li>
+                <li></li>
+              </ul>
+            </div>
+            <button class="btn btn-primary" type="submit">Doorgann Met</button>
+          </div>
         </form>
       </div>
     </article>
@@ -35,45 +77,70 @@
 import { ref, onMounted } from "vue";
 import { useNuxtApp } from "#app";
 import CustomAccordion from "../components/custom-accordion.vue";
-import { useRoute } from 'nuxt/app'
+import CustomSelect from "../components/forms/custom-select.vue";
+import Breadcrumb from "../components/breadcrumb.vue";
+import { getAvailablePlacesPage, postAvailablePlacesData } from "@/services/api.ts";
+import { useRouter } from 'vue-router';
 
-const route = useRoute()
-const id = route.params.id
+import { v4 as uuidv4 } from "uuid";
+
+const router = useRouter();
 
 const { $axios } = useNuxtApp();
-const dateRange = ref(new Date());
 const content = ref({});
-const defaultFormat = "dd-MM-yyyy";
+const quantity = ref(1);
+const baseValue = ref(10);
+const quantityOptions = ref([]);
 
-const submitBooking = async () => {
-  let bookingData = {
-    arriveDate: dateRange.value[0],
-    leaveDate: dateRange.value[1],
+const totalValue = computed(() => {
+  const rawValue = quantity.value * baseValue.value;
+  return rawValue.toFixed(2);
+});
+
+const submitPlaces = async () => {
+  let data = {
+    parkingLotId: uuidv4(),
+    numberOfSpaces: quantity,
   };
-
-  let url = "/api/parking-availability/Get";
-
   try {
-    await $axios.post(url, bookingData);
+    await postAvailablePlacesData(data);
+    router.push({ name: 'additional-services' });
   } catch (error) {
     console.error("Error:", error);
   }
 };
 
-const getReserveContent = async () => {
-  let url = "/umbraco/delivery/api/v2/content/item/reserveer-nu/beschikbare-plaatsen/";
+const getPageContent = async () => {
+  try {
+    const response = await getAvailablePlacesPage();
+    content.value = response;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
 
+const getPlaces = async () => {
+  let url = "/api/selection/Get";
   try {
     const response = await $axios.get(url);
-    content.value = response.data;
   } catch (error) {
     console.error("Error:", error);
   }
 };
 
+const populateSelect = () => {
+  for (let i = 1; i <= 55; i++) {
+    quantityOptions.value.push({
+      value: i,
+      label: i.toString(),
+    });
+  }
+};
 
 onMounted(() => {
-  getReserveContent();
+  getPageContent();
+  populateSelect();
+  getPlaces();
 });
 </script>
 

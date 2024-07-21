@@ -15,6 +15,15 @@ export default defineNuxtConfig({
       ],
     }
   },
+  router: {
+    extendRoutes(routes, resolve) {
+      routes.push({
+        name: 'available-places',
+        path: '/available-places',
+        component: resolve(__dirname, 'pages/available-places.vue')
+      });
+    }
+  },
 
   runtimeConfig: {
     public: {

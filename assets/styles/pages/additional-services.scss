@@ -7,8 +7,8 @@
 @import "../_elements/_progress-steps";
 
 
-.available-places {
 
+.additional-services {
     &__main-content {
         padding: 20px 0 35px;
     }
@@ -41,11 +41,8 @@
         }
     }
 
-    &__form {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 1.5rem;
+
+    &__services-form {
         margin-top: 1.5rem;
     }
 
@@ -53,11 +50,6 @@
         background-color: $white-edgar;
         border-radius: 12px;
         padding: 25px;
-        flex: 0 0 calc(50% - 0.75rem);
-
-        @include media-breakpoint-down(md) {
-            flex: 0 0 100%;
-        }
 
         h4 {
             @include font-size($font-small);
@@ -67,55 +59,52 @@
         }
     }
 
-    &__summary-total {
+    &__row-service {
+        border-bottom: 2px solid $white;
+        padding-bottom: 16px;
+        margin-bottom: 16px;
+
+        p {
+            @include font-size($font-small);
+            color: $secondary;
+            padding-bottom: 0;
+        }
+
         > div {
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+            
 
-            &:nth-of-type(1) {
-                border-bottom: 2px solid $white;
-                padding-bottom: 8px;
-                margin-bottom: 8px;
-
-                p {
-                    color: $mandrake;
-                    @include font-size($font-small);
-                    margin-bottom: 0;
-                }
-
-                h5 {
-                    color: $mandrake;
-                    @include font-size($font-small);
-                }
+            select {
+                width: 85px;
             }
+
+            p {
+                margin-bottom: 0;
+            }
+
             &:nth-of-type(2) {
+                margin-top: 24px;
+                align-items: flex-start;
+
+                @include media-breakpoint-down(md) {
+                    flex-direction: column-reverse;
+                    gap: 16px;
+                    align-items: flex-end;
+                }
+                
                 p {
-                    color: $secondary;
-                    @include font-size($font-small);
-                    margin-bottom: 0;
+                    color: $primary;
                 }
 
                 h5 {
-                    color: $secondary;
+                    color: $mandrake;
                     @include font-size($font-small);
+                    white-space: nowrap;
                 }
             }
-        }
-    }
-
-    &__quantity {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        p {
-            color: $secondary;
-            @include font-size($font-small);
-            margin-bottom: 0;
-        }
-
-        select {
-            max-width: 130px;
         }
     }
 

@@ -60,7 +60,9 @@ import { ref, computed, onMounted } from "vue";
 import { addDays, format } from "date-fns";
 import CustomAccordion from "../components/custom-accordion.vue";
 import { getReservePage, postReserveData } from "@/services/api.ts";
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const dateRange = ref(new Date());
 const content = ref({});
 const defaultFormat = "dd-MM-yyyy";
@@ -91,7 +93,7 @@ const submitBooking = async () => {
 
   try {
     await postReserveData(bookingData);
-    this.$router.push({ name: 'AvailablePlaces' });
+    router.push({ name: 'available-places' });
   } catch (error) {
     console.error("Error:", error);
   }
@@ -101,7 +103,6 @@ const getReserveContent = async () => {
   try {
     const response = await getReservePage();
     content.value = response;
-    console.log(content.value)
   } catch (error) {
     console.error("Error:", error);
   }
