@@ -1,7 +1,7 @@
+
 export default defineNuxtConfig({
   devtools: { enabled: true },
   css: [{ src: '~/assets/styles/globals.scss', lang: 'sass' }],
-
   app: {
     head: {
       title: "Ebook Parking",
@@ -13,6 +13,15 @@ export default defineNuxtConfig({
           crossorigin: "anonymous",
         },
       ],
+    }
+  },
+  router: {
+    extendRoutes(routes, resolve) {
+      routes.push({
+        name: 'available-places',
+        path: '/available-places',
+        component: resolve(__dirname, 'pages/available-places.vue')
+      });
     }
   },
 
@@ -29,8 +38,8 @@ export default defineNuxtConfig({
 
   plugins: [
     '@/plugins/vue-datepicker',
-    '~/plugins/date-fns',
-    '@/plugins/axios'
+    '@/plugins/axios',
+    //'@/plugins/dynamic-routes'
   ],
 
   compatibilityDate: '2024-07-18',

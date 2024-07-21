@@ -1,0 +1,155 @@
+@import "../_base/typography";
+@import "../_base/variables";
+@import "bootstrap/scss/_functions";
+@import "bootstrap/scss/_variables";
+@import "bootstrap/scss/mixins/_breakpoints";
+@import "../_elements/_breadcrumb";
+@import "../_elements/_progress-steps";
+
+
+.available-places {
+
+    &__main-content {
+        padding: 20px 0 35px;
+    }
+
+    &__banner {
+        background-image: url("../../../public/harlingen-drone.jpg");
+        width: 100%;
+        height: 300px;
+        background-position: 50% 0px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    &__details {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 8px 25px 24px;
+        border-left: 5px solid $starfleet-blue;
+        margin-top: 110px;
+        max-width: 305px;
+
+        h3 {
+            color: $black;
+            @include font-size($font-xxx-big);
+            font-weight: $font-weight--bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+    }
+
+    &__form {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    &__card {
+        background-color: $white-edgar;
+        border-radius: 12px;
+        padding: 25px;
+        flex: 0 0 calc(50% - 0.75rem);
+
+        @include media-breakpoint-down(md) {
+            flex: 0 0 100%;
+        }
+
+        h4 {
+            @include font-size($font-small);
+            font-weight: $font-weight--bold;
+            color: $secondary;
+            margin-bottom: 16px;
+        }
+    }
+
+    &__summary-total {
+        > div {
+            display: flex;
+            justify-content: space-between;
+
+            &:nth-of-type(1) {
+                border-bottom: 2px solid $white;
+                padding-bottom: 8px;
+                margin-bottom: 8px;
+
+                p {
+                    color: $mandrake;
+                    @include font-size($font-small);
+                    margin-bottom: 0;
+                }
+
+                h5 {
+                    color: $mandrake;
+                    @include font-size($font-small);
+                }
+            }
+            &:nth-of-type(2) {
+                p {
+                    color: $secondary;
+                    @include font-size($font-small);
+                    margin-bottom: 0;
+                }
+
+                h5 {
+                    color: $secondary;
+                    @include font-size($font-small);
+                }
+            }
+        }
+    }
+
+    &__quantity {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        p {
+            color: $secondary;
+            @include font-size($font-small);
+            margin-bottom: 0;
+        }
+
+        select {
+            max-width: 130px;
+        }
+    }
+
+    &__buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 36px;
+        flex-wrap: wrap;
+
+        @include media-breakpoint-down(md) {
+            align-items: flex-end;
+            margin-top: 0;
+            justify-content: space-between;
+        }
+
+        > div {
+            @include media-breakpoint-down(md) {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                order: -1;
+                margin: 32px 0;
+            }
+        }
+
+        button,
+        a {
+            @include media-breakpoint-down(md) {
+                width: 142px;
+                height: 52px;
+                padding: 15px 20px !important;
+                @include font-size($font-small);
+            }
+        }
+    }
+}

@@ -1,0 +1,55 @@
+@import "../_base/typography";
+@import "../_base/variables";
+@import "bootstrap/scss/_functions";
+@import "bootstrap/scss/_variables";
+@import "bootstrap/scss/mixins/_breakpoints";
+
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    width: 140px;
+
+    &:before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        background-color: $mandrake;
+        z-index: -1;
+    }
+
+    li {
+        height: 8px;
+        width: 8px;
+        border-radius: 100px;
+        background-color: $mandrake;
+        display: flex;
+        align-items: center;
+    }
+
+    &--previous {
+        background-color: $saffron !important;
+
+        &:before {
+            content: "";
+            position: absolute;
+            width: 40px;
+            height: 1px;
+            background-color: $saffron;
+            z-index: -1;
+        }
+    }
+
+    &--active {
+        border: 2px solid $white;
+        background-color: $saffron !important;
+        box-shadow: 0 0 0 1px $saffron;
+        padding: 3px;
+    }
+}

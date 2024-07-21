@@ -1,0 +1,144 @@
+@import "../_base/typography";
+@import "../_base/variables";
+@import "bootstrap/scss/_functions";
+@import "bootstrap/scss/_variables";
+@import "bootstrap/scss/mixins/_breakpoints";
+@import "../_elements/_breadcrumb";
+@import "../_elements/_progress-steps";
+
+
+
+.additional-services {
+    &__main-content {
+        padding: 20px 0 35px;
+    }
+
+    &__banner {
+        background-image: url("../../../public/harlingen-drone.jpg");
+        width: 100%;
+        height: 300px;
+        background-position: 50% 0px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    &__details {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 8px 25px 24px;
+        border-left: 5px solid $starfleet-blue;
+        margin-top: 110px;
+        max-width: 305px;
+
+        h3 {
+            color: $black;
+            @include font-size($font-xxx-big);
+            font-weight: $font-weight--bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+    }
+
+
+    &__services-form {
+        margin-top: 1.5rem;
+    }
+
+    &__card {
+        background-color: $white-edgar;
+        border-radius: 12px;
+        padding: 25px;
+
+        h4 {
+            @include font-size($font-small);
+            font-weight: $font-weight--bold;
+            color: $secondary;
+            margin-bottom: 16px;
+        }
+    }
+
+    &__row-service {
+        border-bottom: 2px solid $white;
+        padding-bottom: 16px;
+        margin-bottom: 16px;
+
+        p {
+            @include font-size($font-small);
+            color: $secondary;
+            padding-bottom: 0;
+        }
+
+        > div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+            
+
+            select {
+                width: 85px;
+            }
+
+            p {
+                margin-bottom: 0;
+            }
+
+            &:nth-of-type(2) {
+                margin-top: 24px;
+                align-items: flex-start;
+
+                @include media-breakpoint-down(md) {
+                    flex-direction: column-reverse;
+                    gap: 16px;
+                    align-items: flex-end;
+                }
+                
+                p {
+                    color: $primary;
+                }
+
+                h5 {
+                    color: $mandrake;
+                    @include font-size($font-small);
+                    white-space: nowrap;
+                }
+            }
+        }
+    }
+
+    &__buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 36px;
+        flex-wrap: wrap;
+
+        @include media-breakpoint-down(md) {
+            align-items: flex-end;
+            margin-top: 0;
+            justify-content: space-between;
+        }
+
+        > div {
+            @include media-breakpoint-down(md) {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                order: -1;
+                margin: 32px 0;
+            }
+        }
+
+        button,
+        a {
+            @include media-breakpoint-down(md) {
+                width: 142px;
+                height: 52px;
+                padding: 15px 20px !important;
+                @include font-size($font-small);
+            }
+        }
+    }
+}
