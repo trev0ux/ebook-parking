@@ -44,4 +44,6 @@ export const postAvailablePlacesData = (data: any) => postPageData('/api/selecti
 
 export const getAdditionalServicesPage = () => fetchPageData('/umbraco/delivery/api/v2/content/item/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/');
 
+export const getServices = () => fetchPageData('/api/services/Get');
+
 export const postAdditionalServicesData = (data: any) => postPageData('/api/selection/Price', data);

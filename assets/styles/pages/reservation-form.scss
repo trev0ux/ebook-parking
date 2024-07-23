@@ -6,6 +6,13 @@
 @import "../_elements/_breadcrumb";
 @import "../_elements/_progress-steps";
 
+.container {
+
+    @include media-breakpoint-up(lg) {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
 
 .reservation-form {
     &__main-content {
@@ -41,10 +48,30 @@
     }
 
     &__form {
-        display: grid;
+        display: flex;
+        flex-wrap: wrap;
         margin-top: 1.5rem;
         grid-template-columns: 1fr 1fr;
         gap: 20px;
+
+        aside {
+            flex: 0 0 calc(50% - 10px);
+            display: grid;
+            gap: 20px;
+
+            @include media-breakpoint-down(lg) {
+                flex: 0 0 100%;
+            }
+        }
+
+        article {
+            flex: 0 0 calc(50% - 10px);
+
+            @include media-breakpoint-down(lg) {
+                flex: 0 0 100%;
+            }
+
+        }
     }
 
     &__card {
@@ -58,6 +85,11 @@
             color: $secondary;
             margin-bottom: 16px;
             text-align: center;
+        }
+
+        p {
+            color: $mandrake;
+            @include font-size($font-small);
         }
     }
 
@@ -78,7 +110,6 @@
     }
 
     &__summary-details {
-
         h5 {
             @include font-size($font-small);
             font-weight: $font-weight--bold;
@@ -88,15 +119,21 @@
         p {
             color: $mandrake;
             @include font-size($font-small);
-             margin-bottom: 0;
+            margin-bottom: 0;
         }
 
         header {
             display: grid;
             gap: 30px;
-            grid-template-columns: 1.5fr 1fr .5fr 1fr;
+            grid-template-columns: 1.5fr 1fr 0.5fr 1fr;
             border-bottom: 2px solid $white;
             padding-bottom: 20px;
+
+            @include media-breakpoint-down(md) {
+                gap: 8px;
+                grid-template-columns: 1.5fr 1fr 1fr 1fr;
+
+            }
 
             h5 {
                 margin-bottom: 0;
@@ -108,14 +145,18 @@
         }
 
         article {
-
             > div {
                 display: grid;
                 padding: 20px 0;
                 gap: 30px;
 
-                grid-template-columns: 1.5fr 1fr .5fr 1fr;
+                grid-template-columns: 1.5fr 1fr 0.5fr 1fr;
 
+                @include media-breakpoint-down(md) {
+                    gap: 8px;
+                    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    
+                }
                 p {
                     &:nth-of-type(2) {
                         text-align: center;
@@ -125,7 +166,6 @@
                         text-align: right;
                     }
                 }
-                
             }
         }
 
@@ -149,7 +189,91 @@
                 margin-bottom: 0;
             }
         }
-
     }
 
+    &__content-fields {
+        fieldset {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+
+            textarea {
+                height: auto;
+            }
+
+            small {
+                color: $primary;
+                display: block;
+                margin-bottom: 8px;
+            }
+        }
+    }
+
+    &__double-select {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        gap: 16px;
+        p {
+            margin-bottom: 0;
+        }
+
+        > div {
+            display: flex;
+            gap: 8px;
+        }
+    }
+
+    &__single-select {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        gap: 16px;
+        > div {
+            width: 245px;
+
+            @include media-breakpoint-down(md) {
+                width: 50%;
+            }
+        }
+        p {
+            margin-bottom: 0;
+        }
+    }
+
+    &__buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 36px;
+        flex-wrap: wrap;
+
+        @include media-breakpoint-down(md) {
+            align-items: flex-end;
+            margin-top: 0;
+            justify-content: space-between;
+        }
+
+        > div {
+            @include media-breakpoint-down(md) {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                order: -1;
+                margin: 32px 0;
+            }
+        }
+
+        button,
+        a {
+            @include media-breakpoint-down(md) {
+                width: 142px;
+                height: 52px;
+                padding: 15px 20px !important;
+                @include font-size($font-small);
+            }
+        }
+    }
 }
