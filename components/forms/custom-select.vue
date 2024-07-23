@@ -8,7 +8,7 @@
         :value="modelValue"
         @input="updateSelected($event.target.value)"
       >
-        <option :value="null" disabled selected>Selecione uma opção</option>
+        <option :value="null" disabled selected>Kies een optie</option>
         <option
           v-for="option in options"
           :key="option.value"

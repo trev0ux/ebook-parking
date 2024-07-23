@@ -76,6 +76,7 @@ import CustomSelect from "../components/forms/custom-select.vue";
 import Breadcrumb from "../components/breadcrumb.vue";
 import {
   getAdditionalServicesPage,
+  getServices,
   postAdditionalServicesData,
 } from "@/services/api.ts";
 import { useRouter } from "vue-router";
@@ -156,6 +157,15 @@ const submitServices = async () => {
   }
 };
 
+const getServicesData = async () => {
+  try {
+    const response = await getServices();
+    content.value = response;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 const getPageContent = async () => {
   try {
     const response = await getAdditionalServicesPage();
@@ -167,6 +177,7 @@ const getPageContent = async () => {
 
 onMounted(() => {
   getPageContent();
+  getServicesData();
   populateSelect();
 });
 </script>

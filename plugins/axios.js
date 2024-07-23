@@ -10,7 +10,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       'Accept': '*/*'
     }
   })
-
+  axiosInstance.defaults.withCredentials = true;
   return {
     provide: {
       axios: axiosInstance
