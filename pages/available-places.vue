@@ -10,33 +10,20 @@
     </div>
     <article class="available-places__main-content">
       <div class="container">
-        <div
-          class="accordion"
-          id="reserveAcordion"
-          v-if="content && content.properties"
-        >
-          <custom-accordion
-            :title="content.properties.accordionTitle"
-            :description="content.properties.accordionContent.markup"
-            item-id="collapse1"
-            parent-id="reserveAcordion"
-          />
+        <div class="accordion" id="reserveAcordion" v-if="content && content.properties">
+          <custom-accordion :title="content.properties.accordionTitle"
+            :description="content.properties.accordionContent.markup" item-id="collapse1" parent-id="reserveAcordion" />
         </div>
         <form @submit.prevent="submitPlaces">
           <section class="available-places__services-form">
             <div class="available-places__card">
               <h4>Aantal parkeerplaatsen</h4>
-              <div class="available-places__quantity">
-                <p>Overdekt</p>
+
+              <div v-for="place in places" class="available-places__quantity">
+                <p>{{place.name}}</p>
                 <div>
-                  <custom-select
-                    label="Aantal auto's"
-                    id="name"
-                    v-bind="$attrs"
-                    v-model="quantity"
-                    :options="quantityOptions"
-                    required
-                  />
+                  <custom-select label="Aantal auto's" id="name" v-bind="$attrs" v-model="place.selectedNumberOfSpaces"
+                    :options="populateSelect(place.numberOfSpaces)" required />
                 </div>
               </div>
             </div>
@@ -89,9 +76,6 @@ const router = useRouter();
 
 const { $axios } = useNuxtApp();
 const content = ref({});
-const quantity = ref(1);
-const baseValue = ref(10);
-const quantityOptions = ref([]);
 const errorMessage = ref("")
 const places = ref([]);
 
@@ -101,24 +85,24 @@ const placeData = computed(() => {
   }
 
   return {
-    items: places.value.places.map((place) => ({
+    places: places.value.map((place) => ({
       parkingLotId: place.parkingLotId || uuidv4(),
       name: place.name,
       price: place.price,
-      rateItems: [place.rateItems[0]] || [0],
-      selectedNumberOfSpaces: parseInt(quantity.value),
+      rateItems: place.rateItems,
+      selectedNumberOfSpaces: parseInt(place.selectedNumberOfSpaces),
       numberOfSpaces: parseInt(place.numberOfSpaces)
     }))
   }
 })
 
 const totalValue = computed(() => {
-  const rawValue = quantity.value * baseValue.value;
+  let rawValue = 0;
+  places.value.forEach((place) => rawValue += place.price * place.selectedNumberOfSpaces)
   return rawValue.toFixed(2);
 });
 
 const submitPlaces = async () => {
-  console.log(placeData.value)
   try {
     await postAvailablePlacesData(placeData.value);
     router.push({ name: 'additional-services' });
@@ -141,23 +125,22 @@ const getPlaces = async () => {
   try {
     const response = await $axios.get(url);
     places.value = response.data.places;
-    console.log(places.value)
-    populateSelect();
   } catch (error) {
     console.error("Error:", error);
   }
 };
 
-const populateSelect = () => {
-  if (places.value.length > 0 || places.value) {
-    const numberOfSpaces = places.value.numberOfSpaces;
+const populateSelect = (numberOfSpaces) => {
+  let options = []
+
   for (let i = 0; i <= numberOfSpaces; i++) {
-    quantityOptions.value.push({
+    options.push({
       value: i,
       label: i.toString(),
     });
   }
-  }
+
+  return options;
 };
 
 onMounted(() => {
