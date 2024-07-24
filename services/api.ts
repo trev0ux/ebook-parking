@@ -48,4 +48,8 @@ export const getServices = () => fetchPageData('/api/services/Get');
 
 export const postAdditionalServicesData = (data: any) => postPageData('/api/selection/Price', data);
 
-export const getReservationPage = () => fetchPageData('/umbraco/delivery/api/v2/content/item/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/uw-gegevens/')
+export const getReservationPage = () => fetchPageData('/umbraco/delivery/api/v2/content/item/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/uw-gegevens/');
+
+export const getReservationData = () => fetchPageData('/api/booking/Get')
+
+export const postReservationFormData = (data: any) => postPageData('/api/booking/Post', data);

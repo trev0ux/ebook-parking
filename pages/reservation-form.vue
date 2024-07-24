@@ -10,7 +10,7 @@
     </div>
     <article class="reservation-form__main-content">
       <div class="container">
-        <form @submit.prevent="submitServices">
+        <form @submit.prevent="submitReservation">
           <section class="reservation-form__form">
             <aside>
               <div class="reservation-form__card">
@@ -18,11 +18,11 @@
                   <h4>Boekingsdetails</h4>
                   <div>
                     <p>Aankomstdatum:</p>
-                    <p>21-07-2024</p>
+                    <p>{{ formatDate(reservation.arrivelDate) }}</p>
                   </div>
                   <div>
-                    <p>Aankomstdatum:</p>
-                    <p>21-07-2024</p>
+                    <p>Vertrekdatum:</p>
+                    <p>{{ formatDate(reservation.departureDate) }}</p>
                   </div>
                 </div>
                 <section class="reservation-form__summary-details">
@@ -32,29 +32,17 @@
                     <h5>Aantal stuks</h5>
                     <h5>Totaal</h5>
                   </header>
-                  <article>
+                  <article v-for="(item, index) in reservation.invoiceDetails" :key="index">
                     <div>
-                      <h5>Overdekt default : 2 Day(s)</h5>
-                      <p>€ 10,00</p>
-                      <p>1</p>
-                      <p>€ 10,00</p>
-                    </div>
-                    <div>
-                      <h5>Overdekt default : 2 Day(s)</h5>
-                      <p>€ 10,00</p>
-                      <p>1</p>
-                      <p>€ 10,00</p>
-                    </div>
-                    <div>
-                      <h5>Overdekt default : 2 Day(s)</h5>
-                      <p>€ 10,00</p>
-                      <p>1</p>
-                      <p>€ 10,00</p>
+                      <h5>{{ item.name }}</h5>
+                      <p>€ {{ item.price.toFixed(2) }}</p>
+                      <p>{{ item.quantity }}</p>
+                      <p>€ {{ item.total.toFixed(2) }}</p>
                     </div>
                   </article>
-                  <div>
+                  <div v-if="reservation.totalCostInlcudingVAT">
                     <h5>Total Cost Including VAT:</h5>
-                    <h6>€ 10,00</h6>
+                    <h6>€ {{ reservation.totalCostInlcudingVAT.toFixed(2) }}</h6>
                   </div>
                 </section>
               </div>
@@ -68,29 +56,33 @@
                 <div class="reservation-form__double-select">
                   <p>Veerboot vertrektijd</p>
                   <div>
-                    <custom-select label="Payment Option" id="name" v-bind="$attrs" v-model="quantity"
-                      :options="quantityOptions" required />
-                    <custom-select label="Payment Option" id="name" v-bind="$attrs" v-model="quantity"
-                      :options="quantityOptions" required />
+                    <custom-select aria-label="Hour" id="name" v-bind="$attrs" v-model="reservation.ferryDepartureHour"
+                      :options="populateSelect(reservation.ferryHours)" required />
+                    <custom-select aria-label="Min" id="name" v-bind="$attrs"
+                      v-model="reservation.ferryDepartureMinutes" :options="populateSelect(reservation.ferryMinutes)"
+                      required />
                   </div>
                 </div>
                 <div class="reservation-form__switch">
                   <p>Betreft sneldienst?</p>
-                  <custom-switch id="name" />
+                  <div>
+                    <custom-switch id="name" v-model="reservation.isFastFerry" @valueChanged="handleFastFerry" />
+                    <span>{{ isFastFerry }}</span>
+                  </div>
                 </div>
                 <div class="reservation-form__double-select">
                   <p>Veerboot vertrektijd</p>
                   <div>
-                    <custom-select label="Payment Option" id="name" v-bind="$attrs" v-model="quantity"
-                      :options="quantityOptions" required />
-                    <custom-select label="Payment Option" id="name" v-bind="$attrs" v-model="quantity"
-                      :options="quantityOptions" required />
+                    <custom-select aria-label="Hours" id="name" v-bind="$attrs" v-model="reservation.ferryReturnHour"
+                      :options="populateSelect(reservation.ferryHours)" />
+                    <custom-select aria-label="Minutes" id="name" v-bind="$attrs"
+                      v-model="reservation.ferryReturnMinutes" :options="populateSelect(reservation.ferryMinutes)" />
                   </div>
                 </div>
                 <div class="reservation-form__single-select">
                   <p>Veerboot vertrektijd</p>
-                  <custom-select label="Payment Option" id="name" v-bind="$attrs" v-model="quantity"
-                    :options="quantityOptions" required />
+                  <custom-select aria-label="Payment Option" id="name" v-bind="$attrs" v-model="reservation.ferryReturn"
+                    :options="populateSelect(reservation.ferries)" />
                 </div>
               </div>
             </aside>
@@ -103,19 +95,23 @@
                     {{ content.properties.descriptionFerryForm }}
                   </p>
                   <fieldset>
-                    <custom-input label="Member Name" required id="name"></custom-input>
-                    <custom-input label="Member Name" required id="name"></custom-input>
-                    <custom-input label="Member Name" required id="name"></custom-input>
-                    <custom-input label="Member Name" required id="name"></custom-input>
+                    <custom-input label="MemberName" required id="MemberName"
+                      v-model="reservation.memberName"></custom-input>
+                    <custom-input label="LicensePlate" required id="LicensePlate"
+                      v-model="reservation.licensePlate"></custom-input>
+                    <custom-input label="Telefoon" required id="Telefoon"
+                      v-model="reservation.phoneNumber"></custom-input>
+                    <custom-input label="Email" required id="Email" v-model="reservation.email"></custom-input>
                     <div>
                       <label class="form-label" for="bericht">Bericht</label>
                       <small>
                         Aanvullende gegevens, tips en/of vragen mag u hier
                         invullen.</small>
-                      <textarea rows="4" cols="20" id="bericht" class="form-control"></textarea>
+                      <textarea rows="4" cols="20" id="bericht" class="form-control"
+                        v-model="reservation.message"></textarea>
                     </div>
-                    <custom-select label="Payment Option" id="name" v-bind="$attrs" v-model="quantity"
-                      :options="quantityOptions" required />
+                    <custom-select label="Payment Option" id="name" v-bind="$attrs" v-model="reservation.paymentOption"
+                      :options="populateSelect(reservation.paymentOptionsList)" required />
                   </fieldset>
                 </div>
               </div>
@@ -125,8 +121,8 @@
             <p>Uw reservering wordt direct in het systeem geplaatst, tevens ontvangt u direct een
               reserveringsbevestiging op het door u ingevoerde e-mailadres!</p>
             <button @click="showModal = true" class="btn btn-link">Voorwaarden</button>
-            <custom-checkbox v-if="showTermsAndConditions" label="I Accept the Terms and Conditions" v-bind="$attrs"
-              id="terms-and-conditions"></custom-checkbox>
+            <custom-checkbox v-if="showTermsAndConditions" v-model="reservation.termsAndConditions"
+              label="I Accept the Terms and Conditions" v-bind="$attrs" id="terms-and-conditions"></custom-checkbox>
           </div>
           <custom-modal v-if="showModal" @close="showModal = false" title="Voorwaarden">
             <template #body>
@@ -177,30 +173,115 @@ import CustomSelect from "../components/forms/custom-select.vue";
 import CustomSwitch from "../components/forms/custom-switch.vue";
 import CustomModal from "../components/custom-modal.vue";
 import CustomCheckbox from "../components/forms/custom-check.vue";
+import { addDays, format } from "date-fns";
 
 import {
   getReservationPage,
+  postReservationFormData,
+  getReservationData
 } from "@/services/api.ts";
-import { ref, onMounted} from "vue";
+import { ref, onMounted } from "vue";
 
 
 const reservation = ref([]);
 const content = ref([]);
 const showModal = ref(false);
 const showTermsAndConditions = ref(false);
+const isFastFerry = ref("No");
+
+const postData = computed(() => {
+  if (!reservation.value) return null
+
+
+  const selectedFerry = reservation.value.ferries.find(ferry =>
+    ferry.value === reservation.value.ferryReturn?.toString()
+  )
+
+  const selectedPayment = reservation.value.paymentOptionsList.find(pay =>
+    pay.value === reservation.value.paymentOption?.toString()
+  )
+  return {
+    invoiceDetails: reservation.value.invoiceDetails.map(item => ({
+      reservationItemId: item.reservationItemId,
+      serviceId: item.serviceId || 0,
+      rateItemId: item.rateItemId,
+      quantity: item.quantity,
+      name: item.name,
+      price: item.price,
+      days: item.days || 1
+    })),
+    memberId: reservation.value.memberId || 0,
+    memberName: reservation.value.memberName,
+    phoneNumber: reservation.value.phoneNumber,
+    email: reservation.value.email || '',
+    licensePlate: reservation.value.licensePlate || '',
+    message: reservation.value.message,
+    termsAndConditions: reservation.value.termsAndConditions,
+    ferryReturn: 0,
+    ferries: selectedFerry ? [{
+      text: selectedFerry.text,
+      value: selectedFerry.value,
+      selected: true
+    }] : [],
+    isFastFerry: reservation.value.isFastFerry,
+    ferryDepartureHour: parseInt(reservation.value.ferryDepartureHour) || 0,
+    ferryDepartureMinutes: parseInt(reservation.value.ferryDepartureMinutes) || 0,
+    ferryReturnHour: parseInt(reservation.value.ferryReturnHour) || 0,
+    ferryReturnMinutes: parseInt(reservation.value.ferryReturnMinutes) || 0,
+    paymentOption: parseInt(reservation.value.paymentOption),
+    paymentOptionsList: selectedPayment ? [{
+      text: selectedPayment.text,
+      value: selectedPayment.value,
+      selected: true
+    }] : [],
+    numberOfPlaces: parseInt(reservation.value.numberOfPlaces),
+    totalCostInlcudingVAT: parseInt(reservation.value.totalCostInlcudingVAT),
+    reservationId: reservation.value.reservationId,
+    departureDate: reservation.value.departureDate,
+    arrivelDate: reservation.value.arrivelDate,
+    payNow: true
+  }
+})
+
+const handleFastFerry = (value) => {
+  isFastFerry.value = value;
+}
 
 const acceptTermsAndConditions = () => {
   showModal.value = false;
   showTermsAndConditions.value = true;
 }
 
-const getReservationData = async () => {
-  let url = "/api/selection/Get";
+const populateSelect = (arr) => {
+  if (!arr) {
+    return []
+  }
+
+  let options = []
+
+  options = arr.map(i => ({
+    value: i.value,
+    label: i.text
+  }));
+
+  return options;
+};
+
+function formatDate(inputDate) {
+  const defaultFormat = 'dd-MM-yyyy';
+
+  if (!inputDate) {
+    return format(new Date(), defaultFormat);
+  }
+
+  return format(new Date(inputDate), defaultFormat);
+}
+
+const getData = async () => {
   try {
-    const response = await $axios.get(url);
-    reservation.value = response.data.places;
-    console.log(reservation.value)
-    populateSelect();
+    const response = await getReservationData();
+    reservation.value = response;
+    // populateSelect();
   } catch (error) {
     console.error("Error:", error);
   }
@@ -210,14 +291,23 @@ const getPageContent = async () => {
   try {
     const response = await getReservationPage();
     content.value = response;
-    console.log(content.value)
   } catch (error) {
     console.error("Error:", error);
   }
 }
 
+const submitReservation = async () => {
+  console.log(postData.value)
+  try {
+    await postReservationFormData(postData.value);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 onMounted(() => {
   getPageContent();
+  getData();
 });
 </script>
 

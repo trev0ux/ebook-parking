@@ -4,7 +4,7 @@
             type="checkbox"
             class="form-check-input custom-form-check__input"
             :class="dataError ? 'is-invalid' : null"
-            @input="$emit('update:modelValue', $event.target.value)"
+            @change="updateValue"
             v-bind="$attrs">
         <label
             class="form-check-label"
@@ -42,6 +42,11 @@
                 this.dataError = this.errorMessage;
             }
         },
+        methods: {
+            updateValue(event) {
+                this.$emit('update:modelValue', event.target.checked)
+            }
+        }
     };
   </script>
   

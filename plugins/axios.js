@@ -8,7 +8,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   const axiosInstance = axios.create({
     baseURL: config.public.apiBaseUrl,
     headers: {
-      'Accept': '*/*'
+      'Accept': '*/*',
+      'Content-Type': 'application/json'
     },
     withCredentials: true
   })

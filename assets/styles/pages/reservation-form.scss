@@ -97,6 +97,18 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        > div {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+
+            span {
+                color: $mandrake;
+                @include font-size($font-small);
+                display: block;    
+            }
+        }
     }
 
     &__summary-header {

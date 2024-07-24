@@ -36,7 +36,7 @@
                     label="Aantal auto's"
                     :id="'service-' + index"
                     v-model="service.quantity"
-                    :options="quantityOptions"
+                    :options="populateSelect(service.numberOfSpaces)"
                     required
                   />
                 </div>
@@ -94,13 +94,17 @@ const services = ref([]);
 
 const quantityOptions = ref([]);
 
-const populateSelect = () => {
-  for (let i = 0; i <= 1; i++) {
-    quantityOptions.value.push({
+const populateSelect = (numberOfSpaces) => {
+  let options = []
+
+  for (let i = 0; i <= numberOfSpaces; i++) {
+    options.push({
       value: i,
       label: i.toString(),
     });
   }
+
+  return options;
 };
 
 const servicesForAPI = computed(() => {
@@ -120,12 +124,9 @@ const servicesForAPI = computed(() => {
 });
 
 const submitServices = async () => {
-  console.log(servicesForAPI.value)
   try {
     await postAdditionalServicesData(servicesForAPI.value);
-    const response = postAdditionalServicesData(servicesForAPI.value);
-    console.log(response);
-    //router.push({ name: "reservation-form" });
+    router.push({ name: "reservation-form" });
   } catch (error) {
     console.error("Error:", error);
   }
@@ -139,6 +140,8 @@ const getServicesData = async () => {
         ...service,
         quantity: 0
       }));  
+    quantityOptions.value = services.value;
+      console.log(quantityOptions.value)
     } catch (error) {
     console.error("Error:", error);
   }
@@ -156,7 +159,6 @@ const getPageContent = async () => {
 onMounted(() => {
   getPageContent();
   getServicesData();
-  populateSelect();
 });
 </script>
 
