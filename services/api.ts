@@ -15,6 +15,7 @@ export const fetchPageData = async (endpoint: string, params: object = {}) => {
   const { $axios } = useNuxtApp();
   try {
     const response = await $axios.get(endpoint, { params });
+    console.log($axios);
     return response.data;
   } catch (error) {
     console.error(`Error fetching data from ${endpoint}:`, error);

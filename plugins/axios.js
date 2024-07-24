@@ -1,3 +1,5 @@
+import { defineNuxtPlugin, useRuntimeConfig } from '#app';
+
 import axios from 'axios'
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -6,11 +8,11 @@ export default defineNuxtPlugin((nuxtApp) => {
   const axiosInstance = axios.create({
     baseURL: config.public.apiBaseUrl,
     headers: {
-      'Content-Type': 'application/json',
       'Accept': '*/*'
-    }
+    },
+    withCredentials: true
   })
-  axiosInstance.defaults.withCredentials = true;
+
   return {
     provide: {
       axios: axiosInstance
