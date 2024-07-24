@@ -93,6 +93,12 @@
         }
     }
 
+    &__switch {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
     &__summary-header {
         margin-bottom: 32px;
 
@@ -243,6 +249,29 @@
         }
     }
 
+    &__terms-and-conditions {
+        margin-top: 32px;
+        padding: 0 16px;
+
+        p {
+            @include font-size($font-small);
+            color: $mandrake;
+            margin-bottom: 20px;  
+        }
+
+        button {
+            color: $secondary;
+            font-weight: $font-weight--bold;
+            @include font-size($font-medium);
+            padding: 0;
+            text-decoration: none;
+        }
+
+        > div {
+            margin-top: 36px;
+        }
+    }
+
     &__buttons {
         display: flex;
         justify-content: space-between;
@@ -269,7 +298,6 @@
         button,
         a {
             @include media-breakpoint-down(md) {
-                width: 142px;
                 height: 52px;
                 padding: 15px 20px !important;
                 @include font-size($font-small);
