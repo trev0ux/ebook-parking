@@ -101,7 +101,7 @@ const placeData = computed(() => {
   }
 
   return {
-    items: places.value.places.map((place) => ({
+    places: places.value.places.map((place) => ({
       parkingLotId: place.parkingLotId || uuidv4(),
       name: place.name,
       price: place.price,
