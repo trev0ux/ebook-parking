@@ -43,11 +43,11 @@
             <div class="available-places__card">
               <h4>Prijs</h4>
               <div class="available-places__summary-total">
-                <div v-for="(place, index) in places.places" :key="index">
+                <div v-for="(place, index) in places" :key="index">
                   <p>{{ place.name }}</p>
                   <h5>€ {{ place.price.toFixed(2) }}</h5>
                 </div>
-                <div>
+                <div v-if="places.length > 0">
                   <p>Totale prijs parkeren </p>
                   <h5>€ {{ totalValue }}</h5>
                 </div>
@@ -140,8 +140,7 @@ const getPlaces = async () => {
   let url = "/api/selection/Get";
   try {
     const response = await $axios.get(url);
-    places.value = response.data;
-    baseValue.value = places.value.places[0].price
+    places.value = response.data.places;
     console.log(places.value)
     populateSelect();
   } catch (error) {
@@ -150,12 +149,14 @@ const getPlaces = async () => {
 };
 
 const populateSelect = () => {
-  const numberOfSpaces = places.value.places[0].numberOfSpaces;
+  if (places.value.length > 0 || places.value) {
+    const numberOfSpaces = places.value.numberOfSpaces;
   for (let i = 0; i <= numberOfSpaces; i++) {
     quantityOptions.value.push({
       value: i,
       label: i.toString(),
     });
+  }
   }
 };
 

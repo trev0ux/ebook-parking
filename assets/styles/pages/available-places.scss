@@ -145,7 +145,6 @@
         button,
         a {
             @include media-breakpoint-down(md) {
-                width: 142px;
                 height: 52px;
                 padding: 15px 20px !important;
                 @include font-size($font-small);

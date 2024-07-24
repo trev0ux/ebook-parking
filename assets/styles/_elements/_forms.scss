@@ -5,7 +5,8 @@
 @import "bootstrap/scss/mixins/_breakpoints";
 
 
-.form-control, .form-select {
+.form-control,
+.form-select {
     border: 2px solid $mandrake;
     border-radius: 10px;
     height: 40px;
@@ -18,4 +19,31 @@
     color: $mandrake;
     @include font-size($font-small);
     margin-bottom: 4px;
+}
+
+.form-check-label {
+    color: $secondary;
+    @include font-size($font-small);
+}
+
+.form-switch {
+    .form-check-input {
+        width: 3em;
+        height: 1.5em;
+
+        &::before {
+            width: 1.5em;
+            height: 1.5em;
+            background-color: $white;
+            transform: translateX(1.5em);
+        }
+
+        &:checked {
+            background-size: 1.5em 1.5em;
+        }
+
+        &:focus {
+            box-shadow: 0 0 0 0.25rem rgba($primary, 0.25);
+        }
+    }
 }

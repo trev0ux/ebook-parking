@@ -1,0 +1,41 @@
+@import "../_base/typography";
+@import "../_base/variables";
+@import "bootstrap/scss/_functions";
+@import "bootstrap/scss/_variables";
+@import "bootstrap/scss/mixins/_breakpoints";
+
+.custom-modal {
+    &__header {
+        border: none;
+        h5 {
+            text-align: center;
+            width: 100%;
+            @include font-size($font-medium);
+            font-weight: $font-weight--bold;
+            color: $secondary;
+        }
+    }
+
+    &__body {
+        p, ol li, ul li {
+            @include font-size($font-small);
+            color: $mandrake;
+        }
+
+        ol, ul {
+            li {
+                margin-bottom: 10px;
+            }
+        }
+    }
+
+    &__footer {
+        border: none;
+        justify-content: center;
+
+        button {
+            background-color: $primary !important;
+            color: $white;
+        }
+    }
+}

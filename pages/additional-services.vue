@@ -42,7 +42,7 @@
                 </div>
                 <div>
                   <p>{{ service.customerInfo }}</p>
-                  <h5>Prijs € {{ calculateServicePrice(service) }}</h5>
+                  <h5>Prijs € {{ calculateServicePrice(service.price, service.quantity) }}</h5>
                 </div>
               </div>
             </div>
@@ -84,42 +84,13 @@ import { v4 as uuidv4 } from "uuid";
 
 const content = ref({});
 const router = useRouter();
-
-const calculateServicePrice = (service) => {
-  return (service.basePrice + service.pricePerUnit * service.quantity).toFixed(
+const calculateServicePrice = (price, quantity) => {
+  return (price * quantity).toFixed(
     2
   );
 };
 
-const services = ref([
-  {
-    id: uuidv4(),
-    serviceId: 1,
-    name: "Auto opladen",
-    unit: "auto's",
-    quantity: 1,
-    basePrice: 3,
-    pricePerUnit: 0.3,
-    customerInfo:
-      "Opladen via 230v aansluiting € 3,- plus 30 cent per kw/h. Totaalbedrag word achteraf berekend.",
-    adminDescription: "Charging service for electric vehicles",
-    adminOnly: false,
-    fixedPrice: false,
-  },
-  {
-    id: uuidv4(),
-    serviceId: 2,
-    name: "Parkeerplaats",
-    unit: "plaatsen",
-    quantity: 1,
-    basePrice: 5,
-    pricePerUnit: 0,
-    customerInfo: "Parkeerplaats € 5,- per dag.",
-    adminDescription: "Parking space rental",
-    adminOnly: false,
-    fixedPrice: true,
-  },
-]);
+const services = ref([]);
 
 const quantityOptions = ref([]);
 
@@ -160,8 +131,12 @@ const submitServices = async () => {
 const getServicesData = async () => {
   try {
     const response = await getServices();
-    content.value = response;
-  } catch (error) {
+    services.value = response.services;
+    services.value = services.value.map(service => ({
+        ...service,
+        quantity: 1
+      }));  
+    } catch (error) {
     console.error("Error:", error);
   }
 };
