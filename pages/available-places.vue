@@ -19,7 +19,7 @@
             <div class="available-places__card">
               <h4>Aantal parkeerplaatsen</h4>
 
-              <div v-for="place in places" class="available-places__quantity">
+              <div v-for="(place, index) in places" :key="'places' + place.index" class="available-places__quantity">
                 <p>{{place.name}}</p>
                 <div>
                   <custom-select label="Aantal auto's" id="name" v-bind="$attrs" v-model="place.selectedNumberOfSpaces"
@@ -41,7 +41,7 @@
               </div>
             </div>
           </section>
-          <div class="invalid-feedback" v-if="errorMessage">{{ errorMessage }}</div>
+          <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">{{ errorMessage }}</div>
           <div class="available-places__buttons">
             <NuxtLink class="btn btn-secondary" to="/">Vorige</NuxtLink>
             <div>
@@ -107,7 +107,7 @@ const submitPlaces = async () => {
     await postAvailablePlacesData(placeData.value);
     router.push({ name: 'additional-services' });
   } catch (error) {
-    errorMessage.value = error;
+    errorMessage.value = error.response.data[""][0];
   }
 };
 

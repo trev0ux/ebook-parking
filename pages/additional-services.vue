@@ -33,7 +33,7 @@
                 <div>
                   <p>{{ service.name }}</p>
                   <custom-select
-                    :label="'Aantal ' + service.unit"
+                    label="Aantal auto's"
                     :id="'service-' + index"
                     v-model="service.quantity"
                     :options="quantityOptions"
@@ -105,12 +105,12 @@ const populateSelect = () => {
 
 const servicesForAPI = computed(() => {
   return {
-    services: services.value.map((service) => ({
+    items: services.value.map((service) => ({
       serviceId: service.serviceId,
       name: service.name,
       adminDescription: service.adminDescription,
       customerInfo: service.customerInfo,
-      price: parseFloat(calculateServicePrice(service)),
+      price: service.price,
       adminOnly: service.adminOnly,
       fixedPrice: service.fixedPrice,
       selectedNumberOfSpaces: service.quantity,
@@ -120,9 +120,12 @@ const servicesForAPI = computed(() => {
 });
 
 const submitServices = async () => {
+  console.log(servicesForAPI.value)
   try {
     await postAdditionalServicesData(servicesForAPI.value);
-    router.push({ name: "reservation-form" });
+    const response = postAdditionalServicesData(servicesForAPI.value);
+    console.log(response);
+    //router.push({ name: "reservation-form" });
   } catch (error) {
     console.error("Error:", error);
   }
@@ -134,7 +137,7 @@ const getServicesData = async () => {
     services.value = response.services;
     services.value = services.value.map(service => ({
         ...service,
-        quantity: 1
+        quantity: 0
       }));  
     } catch (error) {
     console.error("Error:", error);
