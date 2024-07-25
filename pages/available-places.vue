@@ -11,19 +11,33 @@
     <article class="available-places__main-content">
       <div class="container">
         <div class="accordion" id="reserveAcordion" v-if="content && content.properties">
-          <custom-accordion :title="content.properties.accordionTitle"
-            :description="content.properties.accordionContent.markup" item-id="collapse1" parent-id="reserveAcordion" />
+          <custom-accordion
+            :title="content.properties.accordionTitle"
+            :description="content.properties.accordionContent.markup"
+            item-id="collapse1"
+            parent-id="reserveAcordion"
+          />
         </div>
         <form @submit.prevent="submitPlaces">
           <section class="available-places__services-form">
             <div class="available-places__card">
               <h4>Aantal parkeerplaatsen</h4>
 
-              <div v-for="(place, index) in places" :key="'places' + place.index" class="available-places__quantity">
-                <p>{{place.name}}</p>
+              <div
+                v-for="(place, index) in places"
+                :key="'places' + place.index"
+                class="available-places__quantity"
+              >
+                <p>{{ place.name }}</p>
                 <div>
-                  <custom-select label="Aantal auto's" id="name" v-bind="$attrs" v-model="place.selectedNumberOfSpaces"
-                    :options="populateSelect(place.numberOfSpaces)" required />
+                  <custom-select
+                    label="Aantal auto's"
+                    id="name"
+                    v-bind="$attrs"
+                    v-model="place.selectedNumberOfSpaces"
+                    :options="populateSelect(place.numberOfSpaces)"
+                    required
+                  />
                 </div>
               </div>
             </div>
@@ -35,13 +49,15 @@
                   <h5>€ {{ place.price.toFixed(2) }}</h5>
                 </div>
                 <div v-if="places.length > 0">
-                  <p>Totale prijs parkeren </p>
+                  <p>Totale prijs parkeren</p>
                   <h5>€ {{ totalValue }}</h5>
                 </div>
               </div>
             </div>
           </section>
-          <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">{{ errorMessage }}</div>
+          <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">
+            {{ errorMessage }}
+          </div>
           <div class="available-places__buttons">
             <NuxtLink class="btn btn-secondary" to="/">Vorige</NuxtLink>
             <div>
@@ -68,7 +84,7 @@ import CustomAccordion from "../components/custom-accordion.vue";
 import CustomSelect from "../components/forms/custom-select.vue";
 import Breadcrumb from "../components/breadcrumb.vue";
 import { getAvailablePlacesPage, postAvailablePlacesData } from "@/services/api.ts";
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -76,12 +92,12 @@ const router = useRouter();
 
 const { $axios } = useNuxtApp();
 const content = ref({});
-const errorMessage = ref("")
+const errorMessage = ref("");
 const places = ref([]);
 
 const placeData = computed(() => {
   if (!places.value || places.value.length === 0) {
-    return { places: [] }
+    return { places: [] };
   }
 
   return {
@@ -91,21 +107,23 @@ const placeData = computed(() => {
       price: place.price,
       rateItems: place.rateItems,
       selectedNumberOfSpaces: parseInt(place.selectedNumberOfSpaces),
-      numberOfSpaces: parseInt(place.numberOfSpaces)
-    }))
-  }
-})
+      numberOfSpaces: parseInt(place.numberOfSpaces),
+    })),
+  };
+});
 
 const totalValue = computed(() => {
   let rawValue = 0;
-  places.value.forEach((place) => rawValue += place.price * place.selectedNumberOfSpaces)
+  places.value.forEach(
+    (place) => (rawValue += place.price * place.selectedNumberOfSpaces)
+  );
   return rawValue.toFixed(2);
 });
 
 const submitPlaces = async () => {
   try {
     await postAvailablePlacesData(placeData.value);
-    router.push({ name: 'additional-services' });
+    router.push({ name: "additional-services" });
   } catch (error) {
     errorMessage.value = error.response.data[""][0];
   }
@@ -131,7 +149,7 @@ const getPlaces = async () => {
 };
 
 const populateSelect = (numberOfSpaces) => {
-  let options = []
+  let options = [];
 
   for (let i = 0; i <= numberOfSpaces; i++) {
     options.push({

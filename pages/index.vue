@@ -14,7 +14,7 @@
     </div>
     <article class="reserve-page__main-content">
       <div class="container">
-        <div class="accordion" id="reserveAcordion"  v-if="content && content.properties">
+        <div class="accordion" id="reserveAcordion" v-if="content && content.properties">
           <custom-accordion
             :title="content.properties.accordionTitle"
             :description="content.properties.accordionContent.markup"
@@ -60,7 +60,7 @@ import { ref, computed, onMounted } from "vue";
 import { addDays, format } from "date-fns";
 import CustomAccordion from "../components/custom-accordion.vue";
 import { getReservePage, postReserveData } from "@/services/api.ts";
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 const dateRange = ref(new Date());
@@ -75,10 +75,7 @@ const startDate = computed(() => {
 const formattedDateRange = computed(() => {
   if (!dateRange.value || dateRange.value.length !== 2) {
     const today = new Date();
-    return [
-      format(today, defaultFormat),
-      format(addDays(today, 1), defaultFormat),
-    ];
+    return [format(today, defaultFormat), format(addDays(today, 1), defaultFormat)];
   }
   return dateRange.value.map((date) =>
     date ? format(new Date(date), defaultFormat) : ""
@@ -93,7 +90,7 @@ const submitBooking = async () => {
 
   try {
     await postReserveData(bookingData);
-    router.push({ name: 'available-places' });
+    router.push({ name: "available-places" });
   } catch (error) {
     console.error("Error:", error);
   }

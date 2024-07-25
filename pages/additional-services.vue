@@ -10,11 +10,7 @@
     </div>
     <article class="additional-services__main-content">
       <div class="container">
-        <div
-          class="accordion"
-          id="reserveAcordion"
-          v-if="content && content.properties"
-        >
+        <div class="accordion" id="reserveAcordion" v-if="content && content.properties">
           <custom-accordion
             :title="content.properties.accordionTitle"
             :description="content.properties.accordionContent.markup"
@@ -42,15 +38,15 @@
                 </div>
                 <div>
                   <p>{{ service.customerInfo }}</p>
-                  <h5>Prijs € {{ calculateServicePrice(service.price, service.quantity) }}</h5>
+                  <h5>
+                    Prijs € {{ calculateServicePrice(service.price, service.quantity) }}
+                  </h5>
                 </div>
               </div>
             </div>
           </section>
           <div class="additional-services__buttons">
-            <NuxtLink class="btn btn-secondary" to="/available-places"
-              >Vorige</NuxtLink
-            >
+            <NuxtLink class="btn btn-secondary" to="/available-places">Vorige</NuxtLink>
             <div>
               <ul class="progress-steps">
                 <li class="progress-steps--previous"></li>
@@ -85,9 +81,7 @@ import { v4 as uuidv4 } from "uuid";
 const content = ref({});
 const router = useRouter();
 const calculateServicePrice = (price, quantity) => {
-  return (price * quantity).toFixed(
-    2
-  );
+  return (price * quantity).toFixed(2);
 };
 
 const services = ref([]);
@@ -95,7 +89,7 @@ const services = ref([]);
 const quantityOptions = ref([]);
 
 const populateSelect = (numberOfSpaces) => {
-  let options = []
+  let options = [];
 
   for (let i = 0; i <= numberOfSpaces; i++) {
     options.push({
@@ -136,13 +130,13 @@ const getServicesData = async () => {
   try {
     const response = await getServices();
     services.value = response.services;
-    services.value = services.value.map(service => ({
-        ...service,
-        quantity: 0
-      }));  
+    services.value = services.value.map((service) => ({
+      ...service,
+      quantity: 0,
+    }));
     quantityOptions.value = services.value;
-      console.log(quantityOptions.value)
-    } catch (error) {
+    console.log(quantityOptions.value);
+  } catch (error) {
     console.error("Error:", error);
   }
 };

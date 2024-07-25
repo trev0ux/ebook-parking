@@ -32,7 +32,10 @@
                     <h5>Aantal stuks</h5>
                     <h5>Totaal</h5>
                   </header>
-                  <article v-for="(item, index) in reservation.invoiceDetails" :key="index">
+                  <article
+                    v-for="(item, index) in reservation.invoiceDetails"
+                    :key="index"
+                  >
                     <div>
                       <h5>{{ item.name }}</h5>
                       <p>€ {{ item.price.toFixed(2) }}</p>
@@ -49,103 +52,186 @@
               <div class="reservation-form__card">
                 <h4>Boekingsdetails</h4>
                 <p>
-                  Voordat we de reservering kunnen bevestigen, hebben we
-                  onderstaande gegevens nodig, klik vervolgens op reservering
-                  bevestigen.
+                  Voordat we de reservering kunnen bevestigen, hebben we onderstaande
+                  gegevens nodig, klik vervolgens op reservering bevestigen.
                 </p>
                 <div class="reservation-form__double-select">
                   <p>Veerboot vertrektijd</p>
                   <div>
-                    <custom-select aria-label="Hour" id="name" v-bind="$attrs" v-model="reservation.ferryDepartureHour"
-                      :options="populateSelect(reservation.ferryHours)" required />
-                    <custom-select aria-label="Min" id="name" v-bind="$attrs"
-                      v-model="reservation.ferryDepartureMinutes" :options="populateSelect(reservation.ferryMinutes)"
-                      required />
+                    <custom-select
+                      aria-label="Hour"
+                      id="name"
+                      v-bind="$attrs"
+                      v-model="reservation.ferryDepartureHour"
+                      :options="populateSelect(reservation.ferryHours)"
+                      required
+                    />
+                    <custom-select
+                      aria-label="Min"
+                      id="name"
+                      v-bind="$attrs"
+                      v-model="reservation.ferryDepartureMinutes"
+                      :options="populateSelect(reservation.ferryMinutes)"
+                      required
+                    />
                   </div>
                 </div>
                 <div class="reservation-form__switch">
                   <p>Betreft sneldienst?</p>
                   <div>
-                    <custom-switch id="name" v-model="reservation.isFastFerry" @valueChanged="handleFastFerry" />
+                    <custom-switch
+                      id="name"
+                      v-model="reservation.isFastFerry"
+                      @valueChanged="handleFastFerry"
+                    />
                     <span>{{ isFastFerry }}</span>
                   </div>
                 </div>
                 <div class="reservation-form__double-select">
                   <p>Veerboot vertrektijd</p>
                   <div>
-                    <custom-select aria-label="Hours" id="name" v-bind="$attrs" v-model="reservation.ferryReturnHour"
-                      :options="populateSelect(reservation.ferryHours)" />
-                    <custom-select aria-label="Minutes" id="name" v-bind="$attrs"
-                      v-model="reservation.ferryReturnMinutes" :options="populateSelect(reservation.ferryMinutes)" />
+                    <custom-select
+                      aria-label="Hours"
+                      id="name"
+                      v-bind="$attrs"
+                      v-model="reservation.ferryReturnHour"
+                      :options="populateSelect(reservation.ferryHours)"
+                    />
+                    <custom-select
+                      aria-label="Minutes"
+                      id="name"
+                      v-bind="$attrs"
+                      v-model="reservation.ferryReturnMinutes"
+                      :options="populateSelect(reservation.ferryMinutes)"
+                    />
                   </div>
                 </div>
                 <div class="reservation-form__single-select">
                   <p>Veerboot vertrektijd</p>
-                  <custom-select aria-label="Payment Option" id="name" v-bind="$attrs" v-model="reservation.ferryReturn"
-                    :options="populateSelect(reservation.ferries)" />
+                  <custom-select
+                    aria-label="Payment Option"
+                    id="name"
+                    v-bind="$attrs"
+                    v-model="reservation.ferryReturn"
+                    :options="populateSelect(reservation.ferries)"
+                  />
                 </div>
               </div>
             </aside>
             <article>
               <div class="reservation-form__card">
                 <div class="reservation-form__content-fields">
-                  <h4 v-if="titleFerryForm"> {{ content.properties.titleFerryForm }}
-                  </h4>
+                  <h4 v-if="titleFerryForm">{{ content.properties.titleFerryForm }}</h4>
                   <p v-if="descriptionFerryForm">
                     {{ content.properties.descriptionFerryForm }}
                   </p>
                   <fieldset>
-                    <custom-input label="MemberName" required id="MemberName"
-                      v-model="reservation.memberName"></custom-input>
-                    <custom-input label="LicensePlate" required id="LicensePlate"
-                      v-model="reservation.licensePlate"></custom-input>
-                    <custom-input label="Telefoon" required id="Telefoon"
-                      v-model="reservation.phoneNumber"></custom-input>
-                    <custom-input label="Email" required id="Email" v-model="reservation.email"></custom-input>
+                    <custom-input
+                      label="MemberName"
+                      required
+                      id="MemberName"
+                      v-model="reservation.memberName"
+                    ></custom-input>
+                    <custom-input
+                      label="LicensePlate"
+                      required
+                      id="LicensePlate"
+                      v-model="reservation.licensePlate"
+                    ></custom-input>
+                    <custom-input
+                      label="Telefoon"
+                      required
+                      id="Telefoon"
+                      v-model="reservation.phoneNumber"
+                    ></custom-input>
+                    <custom-input
+                      label="Email"
+                      required
+                      id="Email"
+                      v-model="reservation.email"
+                    ></custom-input>
                     <div>
                       <label class="form-label" for="bericht">Bericht</label>
                       <small>
                         Aanvullende gegevens, tips en/of vragen mag u hier
-                        invullen.</small>
-                      <textarea rows="4" cols="20" id="bericht" class="form-control"
-                        v-model="reservation.message"></textarea>
+                        invullen.</small
+                      >
+                      <textarea
+                        rows="4"
+                        cols="20"
+                        id="bericht"
+                        class="form-control"
+                        v-model="reservation.message"
+                      ></textarea>
                     </div>
-                    <custom-select label="Payment Option" id="name" v-bind="$attrs" v-model="reservation.paymentOption"
-                      :options="populateSelect(reservation.paymentOptionsList)" required />
+                    <custom-select
+                      label="Payment Option"
+                      id="name"
+                      v-bind="$attrs"
+                      v-model="reservation.paymentOption"
+                      :options="populateSelect(reservation.paymentOptionsList)"
+                      required
+                    />
                   </fieldset>
                 </div>
               </div>
             </article>
           </section>
           <div class="reservation-form__terms-and-conditions">
-            <p>Uw reservering wordt direct in het systeem geplaatst, tevens ontvangt u direct een
-              reserveringsbevestiging op het door u ingevoerde e-mailadres!</p>
+            <p>
+              Uw reservering wordt direct in het systeem geplaatst, tevens ontvangt u
+              direct een reserveringsbevestiging op het door u ingevoerde e-mailadres!
+            </p>
             <button @click="showModal = true" class="btn btn-link">Voorwaarden</button>
-            <custom-checkbox v-if="showTermsAndConditions" v-model="reservation.termsAndConditions"
-              label="I Accept the Terms and Conditions" v-bind="$attrs" id="terms-and-conditions"></custom-checkbox>
+            <custom-checkbox
+              v-if="showTermsAndConditions"
+              v-model="reservation.termsAndConditions"
+              label="I Accept the Terms and Conditions"
+              v-bind="$attrs"
+              id="terms-and-conditions"
+            ></custom-checkbox>
           </div>
           <custom-modal v-if="showModal" @close="showModal = false" title="Voorwaarden">
             <template #body>
               <ol>
-                <li>The storage is entirely at the expense, risk and liability of the owner / possessor of the stored
-                  object.</li>
-                <li>The owner of the storage facility is not liable for damage, loss, in whatever form, to the stored
-                  objects during the storage period.</li>
-                <li>We do our utmost to protect and guard your property as best we can.</li>
-                <li>You can collect your stored object up to 15 minutes after arrival of the boat.</li>
-                <li>Just email (info@parkeren-harlingen.nl) or send a text message (whatsapp to +31517412986) if the
-                  date of departure changes.</li>
-                <li>You can cancel by clicking on the link at the bottom of the confirmation email.</li>
-                <li>As long as you have not reported to us, we are never responsible for parking fines / additional tax
-                  assessments. We also strongly advise you not to park your car without a parking ticket on public land
-                  in Harlingen due to strict controls (per ticket per day approx.</li>
-                <li>When you reserve a place with a minimum parking time (for example, at least 1 week of parking). Then
-                  you will receive a refund for earlier collection up to the minimum parking time associated with the
-                  place.</li>
+                <li>
+                  The storage is entirely at the expense, risk and liability of the owner
+                  / possessor of the stored object.
+                </li>
+                <li>
+                  The owner of the storage facility is not liable for damage, loss, in
+                  whatever form, to the stored objects during the storage period.
+                </li>
+                <li>
+                  We do our utmost to protect and guard your property as best we can.
+                </li>
+                <li>
+                  You can collect your stored object up to 15 minutes after arrival of the
+                  boat.
+                </li>
+                <li>
+                  Just email (info@parkeren-harlingen.nl) or send a text message (whatsapp
+                  to +31517412986) if the date of departure changes.
+                </li>
+                <li>
+                  You can cancel by clicking on the link at the bottom of the confirmation
+                  email.
+                </li>
+                <li>
+                  As long as you have not reported to us, we are never responsible for
+                  parking fines / additional tax assessments. We also strongly advise you
+                  not to park your car without a parking ticket on public land in
+                  Harlingen due to strict controls (per ticket per day approx.
+                </li>
+                <li>
+                  When you reserve a place with a minimum parking time (for example, at
+                  least 1 week of parking). Then you will receive a refund for earlier
+                  collection up to the minimum parking time associated with the place.
+                </li>
               </ol>
             </template>
             <template #footer>
-              <button type="button" class="btn btn-primary" @click="acceptTermsAndConditions()">IK GA AKKOORD</button>
+              <button type="submit" class="btn btn-primary">IK GA AKKOORD</button>
             </template>
           </custom-modal>
           <div class="reservation-form__buttons">
@@ -159,7 +245,13 @@
                 <li></li>
               </ul>
             </div>
-            <button class="btn btn-primary" type="submit">Bevestig</button>
+            <button
+              class="btn btn-primary"
+              type="button"
+              @click="acceptTermsAndConditions()"
+            >
+              Bevestig
+            </button>
           </div>
         </form>
       </div>
@@ -178,10 +270,9 @@ import { addDays, format } from "date-fns";
 import {
   getReservationPage,
   postReservationFormData,
-  getReservationData
+  getReservationData,
 } from "@/services/api.ts";
 import { ref, onMounted } from "vue";
-
 
 const reservation = ref([]);
 const content = ref([]);
@@ -190,85 +281,91 @@ const showTermsAndConditions = ref(false);
 const isFastFerry = ref("No");
 
 const postData = computed(() => {
-  if (!reservation.value) return null
+  if (!reservation.value) return null;
 
+  const selectedFerry = reservation.value.ferries.find(
+    (ferry) => ferry.value === reservation.value.ferryReturn?.toString()
+  );
 
-  const selectedFerry = reservation.value.ferries.find(ferry =>
-    ferry.value === reservation.value.ferryReturn?.toString()
-  )
-
-  const selectedPayment = reservation.value.paymentOptionsList.find(pay =>
-    pay.value === reservation.value.paymentOption?.toString()
-  )
+  const selectedPayment = reservation.value.paymentOptionsList.find(
+    (pay) => pay.value === reservation.value.paymentOption?.toString()
+  );
   return {
-    invoiceDetails: reservation.value.invoiceDetails.map(item => ({
+    invoiceDetails: reservation.value.invoiceDetails.map((item) => ({
       reservationItemId: item.reservationItemId,
       serviceId: item.serviceId || 0,
       rateItemId: item.rateItemId,
       quantity: item.quantity,
       name: item.name,
       price: item.price,
-      days: item.days || 1
+      days: item.days || 1,
     })),
     memberId: reservation.value.memberId || 0,
     memberName: reservation.value.memberName,
     phoneNumber: reservation.value.phoneNumber,
-    email: reservation.value.email || '',
-    licensePlate: reservation.value.licensePlate || '',
+    email: reservation.value.email || "",
+    licensePlate: reservation.value.licensePlate || "",
     message: reservation.value.message,
     termsAndConditions: reservation.value.termsAndConditions,
     ferryReturn: parseInt(reservation.value.ferryReturn) || null,
-    ferries: selectedFerry ? [{
-      text: selectedFerry.text,
-      value: selectedFerry.value,
-      selected: true
-    }] : [],
+    ferries: selectedFerry
+      ? [
+          {
+            text: selectedFerry.text,
+            value: selectedFerry.value,
+            selected: true,
+          },
+        ]
+      : [],
     isFastFerry: reservation.value.isFastFerry,
     ferryDepartureHour: parseInt(reservation.value.ferryDepartureHour) || 0,
     ferryDepartureMinutes: parseInt(reservation.value.ferryDepartureMinutes) || 0,
     ferryReturnHour: parseInt(reservation.value.ferryReturnHour) || 0,
     ferryReturnMinutes: parseInt(reservation.value.ferryReturnMinutes) || 0,
     paymentOption: parseInt(reservation.value.paymentOption),
-    paymentOptionsList: selectedPayment ? [{
-      text: selectedPayment.text,
-      value: selectedPayment.value,
-      selected: true
-    }] : [],
+    paymentOptionsList: selectedPayment
+      ? [
+          {
+            text: selectedPayment.text,
+            value: selectedPayment.value,
+            selected: true,
+          },
+        ]
+      : [],
     numberOfPlaces: parseInt(reservation.value.numberOfPlaces),
     totalCostInlcudingVAT: parseInt(reservation.value.totalCostInlcudingVAT),
     reservationId: reservation.value.reservationId,
     departureDate: reservation.value.departureDate,
     arrivelDate: reservation.value.arrivelDate,
-    payNow: true
-  }
-})
+    payNow: true,
+  };
+});
 
 const handleFastFerry = (value) => {
   isFastFerry.value = value;
-}
+};
 
 const acceptTermsAndConditions = () => {
   showModal.value = false;
-  showTermsAndConditions.value = true;
-}
+};
 
 const populateSelect = (arr) => {
   if (!arr) {
-    return []
+    return [];
   }
 
-  let options = []
+  let options = [];
 
-  options = arr.map(i => ({
+  options = arr.map((i) => ({
     value: i.value,
-    label: i.text
+    label: i.text,
   }));
 
   return options;
 };
 
 function formatDate(inputDate) {
-  const defaultFormat = 'dd-MM-yyyy';
+  const defaultFormat = "dd-MM-yyyy";
 
   if (!inputDate) {
     return format(new Date(), defaultFormat);
@@ -294,10 +391,10 @@ const getPageContent = async () => {
   } catch (error) {
     console.error("Error:", error);
   }
-}
+};
 
 const submitReservation = async () => {
-  console.log(postData.value)
+  showTermsAndConditions.value = true;
   try {
     await postReservationFormData(postData.value);
   } catch (error) {
