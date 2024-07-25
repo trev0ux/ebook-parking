@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label class="form-label" v-if="label" :for="id">{{ label }}</label>
+    <label class="form-label" v-if="label" :for="id">{{ label }}<span class="required" v-if="required">*</span></label>
     <input
       v-bind="$attrs"
       :id="id"
@@ -8,7 +8,7 @@
       @input="$emit('update:modelValue', $event.target.value)"
       class="form-control"
     />
-    <div class="invalid-feedback" v-if="errorMessage">
+    <div class="invalid-feedback d-block" v-if="errorMessage">
       {{ errorMessage }}
     </div>
   </div>
@@ -34,6 +34,10 @@ export default {
       type: String,
       default: "",
     },
+    required: {
+      type: Boolean,
+      required: false
+    }
   },
   methods: {
     typingOnInput(event) {

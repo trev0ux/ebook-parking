@@ -97,7 +97,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 16px;
 
+        p {
+            margin-bottom: 0;
+        }
         > div {
             display: flex;
             align-items: center;
@@ -108,6 +112,7 @@
                 @include font-size($font-small);
                 display: block;    
             }
+
         }
     }
 
@@ -239,7 +244,19 @@
 
         > div {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
+            max-width: 330px;
+
+            > div {
+                flex: 0 0 calc(50% - 4px);
+                display: flex;
+                align-items: center;
+            }
+
+            .invalid-feedback {
+                flex: 0 0 100% !important;
+            }
         }
     }
 
@@ -251,9 +268,14 @@
         gap: 16px;
         > div {
             width: 245px;
+            flex-direction: column;
 
             @include media-breakpoint-down(md) {
                 width: 50%;
+            }
+
+            > div {
+                width: 100%;
             }
         }
         p {

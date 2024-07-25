@@ -87,11 +87,11 @@
                             <li class="progress-steps--previous"></li>
                             <li class="progress-steps--previous"></li>
                             <li class="progress-steps--previous"></li>
+                            <li class="progress-steps--previous"></li>
                             <li class="progress-steps--active"></li>
-                            <li></li>
                         </ul>
                     </div>
-                    <NuxtLink class="btn btn-primary" to="/available-places">Vorige</NuxtLink>
+                    <NuxtLink class="btn btn-primary" to="/">Vorige</NuxtLink>
                 </div>
             </div>
         </article>

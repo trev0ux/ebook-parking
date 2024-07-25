@@ -56,7 +56,8 @@
                   gegevens nodig, klik vervolgens op reservering bevestigen.
                 </p>
                 <div class="reservation-form__double-select">
-                  <p>Veerboot vertrektijd</p>
+                  <p>Veerboot vertrektijd<span class="required">*</span></p>
+
                   <div>
                     <custom-select
                       aria-label="Hour"
@@ -74,6 +75,12 @@
                       :options="populateSelect(reservation.ferryMinutes)"
                       required
                     />
+                    <div
+                      v-if="hasFieldError('FerryDepartureHour')"
+                      class="invalid-feedback d-block"
+                    >
+                      {{ getFieldError("FerryDepartureHour") }}
+                    </div>
                   </div>
                 </div>
                 <div class="reservation-form__switch">
@@ -88,7 +95,7 @@
                   </div>
                 </div>
                 <div class="reservation-form__double-select">
-                  <p>Veerboot vertrektijd</p>
+                  <p>Veerboot vertrektijd<span class="required">*</span></p>
                   <div>
                     <custom-select
                       aria-label="Hours"
@@ -104,17 +111,31 @@
                       v-model="reservation.ferryReturnMinutes"
                       :options="populateSelect(reservation.ferryMinutes)"
                     />
+                    <div
+                      v-if="hasFieldError('FerryReturnHour')"
+                      class="invalid-feedback d-block"
+                    >
+                      {{ getFieldError("FerryReturnHour") }}
+                    </div>
                   </div>
                 </div>
                 <div class="reservation-form__single-select">
-                  <p>Veerboot vertrektijd</p>
-                  <custom-select
-                    aria-label="Payment Option"
-                    id="name"
-                    v-bind="$attrs"
-                    v-model="reservation.ferryReturn"
-                    :options="populateSelect(reservation.ferries)"
-                  />
+                  <p>Veerboot vertrektijd<span class="required">*</span></p>
+                  <div>
+                    <custom-select
+                      aria-label="Payment Option"
+                      id="name"
+                      v-bind="$attrs"
+                      v-model="reservation.ferryReturn"
+                      :options="populateSelect(reservation.ferries)"
+                    />
+                    <div
+                      v-if="hasFieldError('FerryReturn')"
+                      class="invalid-feedback d-block"
+                    >
+                      {{ getFieldError("FerryReturn") }}
+                    </div>
+                  </div>
                 </div>
               </div>
             </aside>
@@ -128,27 +149,27 @@
                   <fieldset>
                     <custom-input
                       label="MemberName"
-                      required
                       id="MemberName"
                       v-model="reservation.memberName"
                     ></custom-input>
                     <custom-input
                       label="LicensePlate"
-                      required
                       id="LicensePlate"
                       v-model="reservation.licensePlate"
                     ></custom-input>
                     <custom-input
                       label="Telefoon"
-                      required
                       id="Telefoon"
                       v-model="reservation.phoneNumber"
+                      required
+                      :error-message="getFieldError('PhoneNumber')"
                     ></custom-input>
                     <custom-input
                       label="Email"
-                      required
                       id="Email"
+                      required
                       v-model="reservation.email"
+                      :error-message="getFieldError('Email')"
                     ></custom-input>
                     <div>
                       <label class="form-label" for="bericht">Bericht</label>
@@ -190,6 +211,9 @@
               v-bind="$attrs"
               id="terms-and-conditions"
             ></custom-checkbox>
+            <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">
+              {{ errorMessage }}
+            </div>
           </div>
           <custom-modal v-if="showModal" @close="showModal = false" title="Voorwaarden">
             <template #body>
@@ -245,11 +269,7 @@
                 <li></li>
               </ul>
             </div>
-            <button
-              class="btn btn-primary"
-              type="button"
-              @click="acceptTermsAndConditions()"
-            >
+            <button class="btn btn-primary" type="button" @click="showModal = true">
               Bevestig
             </button>
           </div>
@@ -265,7 +285,8 @@ import CustomSelect from "../components/forms/custom-select.vue";
 import CustomSwitch from "../components/forms/custom-switch.vue";
 import CustomModal from "../components/custom-modal.vue";
 import CustomCheckbox from "../components/forms/custom-check.vue";
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
+import { useRouter } from "vue-router";
 
 import {
   getReservationPage,
@@ -278,7 +299,10 @@ const reservation = ref([]);
 const content = ref([]);
 const showModal = ref(false);
 const showTermsAndConditions = ref(false);
+const errorMessage = ref("");
 const isFastFerry = ref("No");
+const validationErrors = ref([]);
+const router = useRouter();
 
 const postData = computed(() => {
   if (!reservation.value) return null;
@@ -345,8 +369,16 @@ const handleFastFerry = (value) => {
   isFastFerry.value = value;
 };
 
-const acceptTermsAndConditions = () => {
-  showModal.value = false;
+const hasFieldError = (fieldName) => {
+  return validationErrors.value && validationErrors.value[fieldName];
+};
+
+const getFieldError = (fieldName) => {
+  return hasFieldError(fieldName) ? validationErrors.value[fieldName][0] : "";
+};
+
+const clearValidationErrors = () => {
+  validationErrors.value = null;
 };
 
 const populateSelect = (arr) => {
@@ -378,7 +410,6 @@ const getData = async () => {
   try {
     const response = await getReservationData();
     reservation.value = response;
-    // populateSelect();
   } catch (error) {
     console.error("Error:", error);
   }
@@ -394,11 +425,24 @@ const getPageContent = async () => {
 };
 
 const submitReservation = async () => {
+  reservation.value.termsAndConditions = true;
   showTermsAndConditions.value = true;
+  showModal.value = false;
+
   try {
     await postReservationFormData(postData.value);
+    router.push({ name: "reservation-confirmed" });
   } catch (error) {
-    console.error("Error:", error);
+    if (error.response && error.response.status === 400) {
+      validationErrors.value = error.response.data.errors;
+    } else {
+      if (error.title) {
+        errorMessage.value = error.title;
+      } else {
+        errorMessage.value = error.response.data[""][0];
+      }
+      console.error("An error occurred:", error);
+    }
   }
 };
 
