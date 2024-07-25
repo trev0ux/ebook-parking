@@ -217,7 +217,7 @@ const postData = computed(() => {
     licensePlate: reservation.value.licensePlate || '',
     message: reservation.value.message,
     termsAndConditions: reservation.value.termsAndConditions,
-    ferryReturn: 0,
+    ferryReturn: parseInt(reservation.value.ferryReturn) || null,
     ferries: selectedFerry ? [{
       text: selectedFerry.text,
       value: selectedFerry.value,
