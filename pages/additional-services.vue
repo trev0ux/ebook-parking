@@ -49,7 +49,7 @@
             {{ errorMessage }}
           </div>
           <div class="additional-services__buttons">
-            <NuxtLink class="btn btn-secondary" to="/available-places">Vorige</NuxtLink>
+            <NuxtLink class="btn btn-secondary" :to="{ name: 'available-places' }">Vorige</NuxtLink>
             <div>
               <ul class="progress-steps">
                 <li class="progress-steps--previous"></li>

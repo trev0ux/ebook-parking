@@ -72,7 +72,7 @@
               <li class="progress-steps--active"></li>
             </ul>
           </div>
-          <NuxtLink class="btn btn-primary" to="/">Vorige</NuxtLink>
+          <NuxtLink class="btn btn-primary" :to="{ name: 'reservation' }">Vorige</NuxtLink>
         </div>
       </div>
     </article>

@@ -223,7 +223,7 @@
             </template>
           </custom-modal>
           <div class="reservation-form__buttons">
-            <NuxtLink class="btn btn-secondary" to="/available-places">Vorige</NuxtLink>
+            <NuxtLink class="btn btn-secondary" :to="{ name: 'additional-services' }">Vorige</NuxtLink>
             <div>
               <ul class="progress-steps">
                 <li class="progress-steps--previous"></li>
