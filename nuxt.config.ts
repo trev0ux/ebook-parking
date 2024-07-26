@@ -19,6 +19,7 @@ const staticRouteFiles: string[] = [
   '~/pages/index.vue',
   '~/pages/available-places.vue',
   '~/pages/additional-services.vue',
+  '~/pages/thank-you.vue',
   '~/pages/reservation-form.vue'
 ];
 
@@ -26,7 +27,8 @@ const staticRouteNames: string[] = [
   'reservation',
   'available-places',
   'additional-services',
-  'reservation-form'
+  'thank-you',
+  'reservation-form',
 ];
 
 export default defineNuxtConfig({
@@ -45,6 +47,18 @@ export default defineNuxtConfig({
       ],
     }
   },
+  nitro: {
+    prerender: {
+      routes: ['/reserveer-nu']
+    }
+  },
+  redirects: [
+    {
+      source: '/',
+      destination: '/reserveer-nu',
+      statusCode: 301
+    }
+  ],
   hooks: {
     'pages:extend': async (pages) => {
       const cmsRoutes = await fetchRoutes();
@@ -54,11 +68,23 @@ export default defineNuxtConfig({
       cmsRoutes.forEach((route: any, index: any) => {
         const file = staticRouteFiles[index];
         const name = staticRouteNames[index]
-        pages.push({
+        const routeConfig: any = {
           name: name,
           path: route.path,
           file: file
-        });
+        };
+
+        if (index === 0) {
+          const firstRoute: any = {
+            name: staticRouteNames[1],
+            path: '/',
+            file: staticRouteFiles[1],
+            redirect: route.path
+          };
+          pages.push(firstRoute);
+        }
+
+        pages.push(routeConfig);
       });
 
       function removePagesMatching(pattern: RegExp, pages: any[] = []) {

@@ -1,26 +1,25 @@
 <template>
-  <section class="reservation-confirm">
-    <div class="reservation-confirm__banner">
+  <section class="thank-you">
+    <div class="thank-you__banner">
       <div class="container">
-        <div class="reservation-confirm__details">
-          <h3>Uw reservering is bevestigd</h3>
+        <div class="thank-you__details">
+          <h3>{{ content.name }}</h3>
           <Breadcrumb />
         </div>
       </div>
     </div>
-    <article class="reservation-confirm__payment-summary">
+    <article class="thank-you__payment-summary">
       <div class="container">
-        <div class="reservation-confirm__thanks">BEDANKT VOOR HET BOEKEN BIJ ONS!</div>
-        <div class="reservation-confirm__warning">
-          <h4>Controleer alstublieft alle onderstaande informatie!</h4>
-          <p>
-            U ontvangt ook een bevestigingsmail, controleer nogmaals of u het juiste
-            e-mailadres heeft ingevoerd, als dit niet correct is, maak dan een foto van
-            deze pagina ter bevestiging.
-          </p>
+        <div class="thank-you__thanks" v-if="content.properties">
+          {{ content.properties.thankYouMessage }}
         </div>
-        <h5 class="reservation-confirm__payment-complete">Payment complete</h5>
-        <section class="reservation-confirm__total-summary">
+        <div
+          class="thank-you__warning"
+          v-if="content.properties"
+          v-html="content.properties.emailMessage.markup"
+        ></div>
+        <h5 class="thank-you__payment-complete">Payment complete</h5>
+        <section class="thank-you__total-summary">
           <h4>Boeking Hervatten</h4>
           <div>
             <p>Reserveringsnummer:</p>
@@ -58,12 +57,12 @@
             <p>Aanvullende diensten:</p>
             <p>{{ reservation.additionalServices }}</p>
           </div>
-          <div class="reservation-confirm__total">
+          <div class="thank-you__total">
             <h6>Total Costs</h6>
             <h6>{{ reservation.totalCostInlcudingVAT }}</h6>
           </div>
         </section>
-        <div class="reservation-confirm__buttons">
+        <div class="thank-you__buttons">
           <div>
             <ul class="progress-steps">
               <li class="progress-steps--previous"></li>
@@ -81,7 +80,7 @@
 </template>
 
 <style>
-@import "~/assets/styles/pages/reservation-confirmed.scss";
+@import "~/assets/styles/pages/thank-you.scss";
 </style>
 
 <script setup>
@@ -92,6 +91,7 @@ import {
   getReservationConfirmedPage,
 } from "@/services/api.ts";
 
+const content = ref([]);
 const reservation = ref([
   {
     reservationItemId: 17981,
@@ -111,7 +111,7 @@ const getData = async () => {
   try {
     const response = await getReservationConfirmedData();
     reservation.value = response;
-    console.log(reservation.value);
+    console.log(response);
   } catch (error) {
     console.error("Error:", error);
   }
@@ -121,14 +121,13 @@ const getPageContent = async () => {
   try {
     const response = await getReservationConfirmedPage();
     content.value = response;
-    console.log(content.value);
   } catch (error) {
     console.error("Error:", error);
   }
 };
 
 onMounted(() => {
-  //getData();
-  //getPageContent();
+  getData();
+  getPageContent();
 });
 </script>

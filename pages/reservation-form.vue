@@ -191,7 +191,6 @@
                       v-bind="$attrs"
                       v-model="reservation.paymentOption"
                       :options="populateSelect(reservation.paymentOptionsList)"
-                      required
                     />
                   </fieldset>
                 </div>
@@ -215,44 +214,9 @@
               {{ errorMessage }}
             </div>
           </div>
-          <custom-modal v-if="showModal" @close="showModal = false" title="Voorwaarden">
+          <custom-modal v-if="showModal" @close="showModal = false" :title="content.properties.modelTitle">
             <template #body>
-              <ol>
-                <li>
-                  The storage is entirely at the expense, risk and liability of the owner
-                  / possessor of the stored object.
-                </li>
-                <li>
-                  The owner of the storage facility is not liable for damage, loss, in
-                  whatever form, to the stored objects during the storage period.
-                </li>
-                <li>
-                  We do our utmost to protect and guard your property as best we can.
-                </li>
-                <li>
-                  You can collect your stored object up to 15 minutes after arrival of the
-                  boat.
-                </li>
-                <li>
-                  Just email (info@parkeren-harlingen.nl) or send a text message (whatsapp
-                  to +31517412986) if the date of departure changes.
-                </li>
-                <li>
-                  You can cancel by clicking on the link at the bottom of the confirmation
-                  email.
-                </li>
-                <li>
-                  As long as you have not reported to us, we are never responsible for
-                  parking fines / additional tax assessments. We also strongly advise you
-                  not to park your car without a parking ticket on public land in
-                  Harlingen due to strict controls (per ticket per day approx.
-                </li>
-                <li>
-                  When you reserve a place with a minimum parking time (for example, at
-                  least 1 week of parking). Then you will receive a refund for earlier
-                  collection up to the minimum parking time associated with the place.
-                </li>
-              </ol>
+                <div v-html="content.properties.modelText.markup"></div>
             </template>
             <template #footer>
               <button type="submit" class="btn btn-primary">IK GA AKKOORD</button>
@@ -419,6 +383,7 @@ const getPageContent = async () => {
   try {
     const response = await getReservationPage();
     content.value = response;
+    console.log(content.value)
   } catch (error) {
     console.error("Error:", error);
   }
@@ -431,9 +396,10 @@ const submitReservation = async () => {
 
   try {
     await postReservationFormData(postData.value);
-    router.push({ name: "reservation-confirmed" });
+    router.push({ name: "thank-you" });
   } catch (error) {
-    if (error.response && error.response.status === 400) {
+    if (error.response) {
+      if (error.response.status === 400) {
       validationErrors.value = error.response.data.errors;
     } else {
       if (error.title) {
@@ -441,6 +407,9 @@ const submitReservation = async () => {
       } else {
         errorMessage.value = error.response.data[""][0];
       }
+      console.error("An error occurred:", error);
+    }
+    } else {
       console.error("An error occurred:", error);
     }
   }

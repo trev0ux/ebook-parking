@@ -45,6 +45,9 @@
               </div>
             </div>
           </section>
+          <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">
+            {{ errorMessage }}
+          </div>
           <div class="additional-services__buttons">
             <NuxtLink class="btn btn-secondary" to="/available-places">Vorige</NuxtLink>
             <div>
@@ -76,13 +79,13 @@ import {
   postAdditionalServicesData,
 } from "@/services/api.ts";
 import { useRouter } from "vue-router";
-import { v4 as uuidv4 } from "uuid";
 
 const content = ref({});
 const router = useRouter();
 const calculateServicePrice = (price, quantity) => {
   return (price * quantity).toFixed(2);
 };
+const errorMessage = ref("");
 
 const services = ref([]);
 
@@ -123,6 +126,7 @@ const submitServices = async () => {
     router.push({ name: "reservation-form" });
   } catch (error) {
     console.error("Error:", error);
+    errorMessage.value = error.response.data[""][0];
   }
 };
 

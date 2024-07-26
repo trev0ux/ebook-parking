@@ -48,6 +48,9 @@
             :week-start="1"
             auto-apply
           />
+          <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">
+            {{ errorMessage }}
+          </div>
           <button class="btn btn-primary" type="submit">Reserveer Nu</button>
         </form>
       </div>
@@ -66,6 +69,7 @@ const router = useRouter();
 const dateRange = ref(new Date());
 const content = ref({});
 const defaultFormat = "dd-MM-yyyy";
+const errorMessage = ref("");
 
 const startDate = computed(() => {
   const now = new Date();
@@ -92,6 +96,7 @@ const submitBooking = async () => {
     await postReserveData(bookingData);
     router.push({ name: "available-places" });
   } catch (error) {
+    errorMessage.value = error.response.data[""][0];
     console.error("Error:", error);
   }
 };

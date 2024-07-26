@@ -28,8 +28,6 @@ const breadcrumbs = computed(() => {
     const breadcrumbPath = "/" + paths.slice(0, index + 1).join("/");
     const matchedRoute = router.resolve(breadcrumbPath);
 
-    console.log(router.resolve(breadcrumbPath));
-
     if (matchedRoute && matchedRoute.name) {
       breadcrumbsArray.push({
         name: matchedRoute.name,
