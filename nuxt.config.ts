@@ -52,8 +52,8 @@ export default defineNuxtConfig({
       pages.splice(0, pages.length);
 
       cmsRoutes.forEach((route: any, index: any) => {
-        const file = staticRouteFiles[index]; 
-        const name = staticRouteNames[index]     
+        const file = staticRouteFiles[index];
+        const name = staticRouteNames[index]
         pages.push({
           name: name,
           path: route.path,
@@ -61,7 +61,7 @@ export default defineNuxtConfig({
         });
       });
 
-      function removePagesMatching (pattern: RegExp, pages: any[] = []) {
+      function removePagesMatching(pattern: RegExp, pages: any[] = []) {
         const pagesToRemove = []
         for (const page of pages) {
           if (pattern.test(page.file)) {

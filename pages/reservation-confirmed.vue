@@ -103,7 +103,7 @@ const reservation = ref([
     location: "The cover and the overked",
     totalCostInlcudingVAT: "€ 10.00",
     numberOfPlaces: 1,
-    additionalServices: []
+    additionalServices: [],
   },
 ]);
 

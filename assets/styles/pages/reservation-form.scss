@@ -102,7 +102,8 @@
         p {
             margin-bottom: 0;
         }
-        > div {
+
+        >div {
             display: flex;
             align-items: center;
             gap: 20px;
@@ -110,7 +111,7 @@
             span {
                 color: $mandrake;
                 @include font-size($font-small);
-                display: block;    
+                display: block;
             }
 
         }
@@ -119,7 +120,7 @@
     &__summary-header {
         margin-bottom: 32px;
 
-        > div {
+        >div {
             display: flex;
             justify-content: space-between;
             margin-bottom: 16px;
@@ -168,7 +169,7 @@
         }
 
         article {
-            > div {
+            >div {
                 display: grid;
                 padding: 20px 0;
                 gap: 30px;
@@ -178,8 +179,9 @@
                 @include media-breakpoint-down(md) {
                     gap: 8px;
                     grid-template-columns: 1.5fr 1fr 1fr 1fr;
-    
+
                 }
+
                 p {
                     &:nth-of-type(2) {
                         text-align: center;
@@ -192,7 +194,7 @@
             }
         }
 
-        > div {
+        >div {
             display: flex;
             justify-content: space-between;
             padding: 15px 24px;
@@ -238,17 +240,18 @@
         justify-content: space-between;
         margin-bottom: 16px;
         gap: 16px;
+
         p {
             margin-bottom: 0;
         }
 
-        > div {
+        >div {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             max-width: 330px;
 
-            > div {
+            >div {
                 flex: 0 0 calc(50% - 4px);
                 display: flex;
                 align-items: center;
@@ -266,7 +269,8 @@
         justify-content: space-between;
         margin-bottom: 16px;
         gap: 16px;
-        > div {
+
+        >div {
             width: 245px;
             flex-direction: column;
 
@@ -274,10 +278,11 @@
                 width: 50%;
             }
 
-            > div {
+            >div {
                 width: 100%;
             }
         }
+
         p {
             margin-bottom: 0;
         }
@@ -290,7 +295,7 @@
         p {
             @include font-size($font-small);
             color: $mandrake;
-            margin-bottom: 20px;  
+            margin-bottom: 20px;
         }
 
         button {
@@ -301,7 +306,7 @@
             text-decoration: none;
         }
 
-        > div {
+        >div {
             margin-top: 36px;
         }
     }
@@ -319,7 +324,7 @@
             justify-content: space-between;
         }
 
-        > div {
+        >div {
             @include media-breakpoint-down(md) {
                 width: 100%;
                 display: flex;

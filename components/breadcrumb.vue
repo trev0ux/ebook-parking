@@ -14,18 +14,18 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
 
 const breadcrumbs = computed(() => {
-  const paths = route.path.split('/').filter(segment => segment);
+  const paths = route.path.split("/").filter((segment) => segment);
   const breadcrumbsArray = [];
 
   paths.forEach((_, index) => {
-    const breadcrumbPath = '/' + paths.slice(0, index + 1).join('/');
+    const breadcrumbPath = "/" + paths.slice(0, index + 1).join("/");
     const matchedRoute = router.resolve(breadcrumbPath);
 
     console.log(router.resolve(breadcrumbPath));
@@ -33,12 +33,12 @@ const breadcrumbs = computed(() => {
     if (matchedRoute && matchedRoute.name) {
       breadcrumbsArray.push({
         name: matchedRoute.name,
-        path: breadcrumbPath
+        path: breadcrumbPath,
       });
     } else {
       breadcrumbsArray.push({
-        name: 'Unnamed Route',
-        path: breadcrumbPath
+        name: "Unnamed Route",
+        path: breadcrumbPath,
       });
     }
   });
