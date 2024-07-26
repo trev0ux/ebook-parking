@@ -53,3 +53,7 @@ export const getReservationPage = () => fetchPageData('/umbraco/delivery/api/v2/
 export const getReservationData = () => fetchPageData('/api/booking/Get')
 
 export const postReservationFormData = (data: any) => postPageData('/api/booking/Post', data);
+
+export const getReservationConfirmedData = () => fetchPageData('/api/booking/Finish');
+
+export const getReservationConfirmedPage = () => fetchPageData('/umbraco/delivery/api/v2/content/item/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/uw-gegevens/uw-reservering-is-bevestigd/');

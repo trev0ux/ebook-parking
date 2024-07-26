@@ -65,6 +65,7 @@
     &__payment-complete {
         width: 100%;
         text-align: center;
+        @include font-size($font-small)
     }
 
     &__total-summary {

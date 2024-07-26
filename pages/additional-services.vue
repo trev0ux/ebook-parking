@@ -135,7 +135,6 @@ const getServicesData = async () => {
       quantity: 0,
     }));
     quantityOptions.value = services.value;
-    console.log(quantityOptions.value);
   } catch (error) {
     console.error("Error:", error);
   }
