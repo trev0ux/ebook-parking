@@ -16,18 +16,9 @@
 <script setup>
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useRoutes } from '@/composables/useRoutes';
 
 const route = useRoute();
 const router = useRouter();
-const { routes } = useRoutes()
-
-onMounted(async () => {
-  await useRoutes()
-  console.log(routes);
-})
-
-
 
 const breadcrumbs = computed(() => {
   const paths = route.path.split("/").filter((segment) => segment);

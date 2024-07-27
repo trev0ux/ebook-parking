@@ -6,15 +6,15 @@
 @import "../_elements/_breadcrumb";
 @import "../_elements/_progress-steps";
 
-.container {
-
-    @include media-breakpoint-up(lg) {
-        padding-left: 0;
-        padding-right: 0;
-    }
-}
 
 .reservation-form {
+    .container {
+
+        @include media-breakpoint-up(lg) {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
     &__main-content {
         padding: 20px 0 35px;
     }
