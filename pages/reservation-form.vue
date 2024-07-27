@@ -233,8 +233,14 @@
                 <li></li>
               </ul>
             </div>
-            <button class="btn btn-primary" type="button" @click="showModal = true">
+            <button class="btn btn-primary" type="button" @click="showModal = true" :disabled="isSubmitting">
               Bevestig
+              <span
+                v-if="isSubmitting"
+                class="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
             </button>
           </div>
         </form>
@@ -267,6 +273,7 @@ const errorMessage = ref("");
 const isFastFerry = ref("No");
 const validationErrors = ref([]);
 const router = useRouter();
+const isSubmitting = ref(false);
 
 const postData = computed(() => {
   if (!reservation.value) return null;
@@ -393,6 +400,7 @@ const submitReservation = async () => {
   reservation.value.termsAndConditions = true;
   showTermsAndConditions.value = true;
   showModal.value = false;
+  isSubmitting.value = true;
 
   try {
     await postReservationFormData(postData.value);
@@ -412,6 +420,8 @@ const submitReservation = async () => {
     } else {
       console.error("An error occurred:", error);
     }
+  } finally {
+    isSubmitting.value = false;
   }
 };
 

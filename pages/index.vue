@@ -51,7 +51,10 @@
           <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">
             {{ errorMessage }}
           </div>
-          <button class="btn btn-primary" type="submit">Reserveer Nu</button>
+          <button class="btn btn-primary" type="submit" :disabled="isSubmitting">
+          Reserveer Nu
+          <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          </button>
         </form>
       </div>
     </article>
@@ -70,6 +73,7 @@ const dateRange = ref(new Date());
 const content = ref({});
 const defaultFormat = "dd-MM-yyyy";
 const errorMessage = ref("");
+const isSubmitting = ref(false);
 
 const startDate = computed(() => {
   const now = new Date();
@@ -92,12 +96,16 @@ const submitBooking = async () => {
     leaveDate: dateRange.value[1],
   };
 
+  isSubmitting.value = true;
+
   try {
     await postReserveData(bookingData);
     router.push({ name: "available-places" });
   } catch (error) {
     errorMessage.value = error.response.data[""][0];
     console.error("Error:", error);
+  } finally {
+    isSubmitting.value = true;
   }
 };
 

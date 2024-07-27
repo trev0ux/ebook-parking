@@ -144,10 +144,16 @@
 
         button,
         a {
+            display: flex;
+            align-items: center;
             @include media-breakpoint-down(md) {
                 height: 52px;
                 padding: 15px 20px !important;
                 @include font-size($font-small);
+            }
+
+            span {
+                margin-left: 10px;
             }
         }
     }

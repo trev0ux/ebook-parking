@@ -28,7 +28,7 @@
         padding: 8px 25px 24px;
         border-left: 5px solid $starfleet-blue;
         margin-top: 110px;
-        max-width: 305px;
+        max-width: 375px;
 
         h3 {
             color: $black;
@@ -133,6 +133,9 @@
 
         button,
         a {
+            background-color: $primary !important;
+            color: $white;
+
             @include media-breakpoint-down(md) {
                 height: 52px;
                 padding: 15px 20px !important;

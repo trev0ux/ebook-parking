@@ -59,7 +59,9 @@
             {{ errorMessage }}
           </div>
           <div class="available-places__buttons">
-            <NuxtLink class="btn btn-secondary" :to="{ name: 'reservation' }">Vorige</NuxtLink>
+            <NuxtLink class="btn btn-secondary" :to="{ name: 'reservation' }"
+              >Vorige</NuxtLink
+            >
             <div>
               <ul class="progress-steps">
                 <li class="progress-steps--previous"></li>
@@ -69,7 +71,15 @@
                 <li></li>
               </ul>
             </div>
-            <button class="btn btn-primary" type="submit">Doorgann Met</button>
+            <button class="btn btn-primary" type="submit" :disabled="isSubmitting">
+              Doorgann Met
+              <span
+                v-if="isSubmitting"
+                class="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
           </div>
         </form>
       </div>
@@ -94,6 +104,7 @@ const { $axios } = useNuxtApp();
 const content = ref({});
 const errorMessage = ref("");
 const places = ref([]);
+const isSubmitting = ref(false);
 
 const placeData = computed(() => {
   if (!places.value || places.value.length === 0) {
@@ -121,11 +132,14 @@ const totalValue = computed(() => {
 });
 
 const submitPlaces = async () => {
+  isSubmitting.value = true;
   try {
     await postAvailablePlacesData(placeData.value);
     router.push({ name: "additional-services" });
   } catch (error) {
     errorMessage.value = error.response.data[""][0];
+  } finally {
+    isSubmitting.value = false;
   }
 };
 

@@ -49,7 +49,9 @@
             {{ errorMessage }}
           </div>
           <div class="additional-services__buttons">
-            <NuxtLink class="btn btn-secondary" :to="{ name: 'available-places' }">Vorige</NuxtLink>
+            <NuxtLink class="btn btn-secondary" :to="{ name: 'available-places' }"
+              >Vorige</NuxtLink
+            >
             <div>
               <ul class="progress-steps">
                 <li class="progress-steps--previous"></li>
@@ -60,7 +62,15 @@
                 <li></li>
               </ul>
             </div>
-            <button class="btn btn-primary" type="submit">Reserveer Nu</button>
+            <button class="btn btn-primary" type="submit" :disabled="isSubmitting">
+              Reserveer Nu
+              <span
+                v-if="isSubmitting"
+                class="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
           </div>
         </form>
       </div>
@@ -86,6 +96,7 @@ const calculateServicePrice = (price, quantity) => {
   return (price * quantity).toFixed(2);
 };
 const errorMessage = ref("");
+const isSubmitting = ref(false);
 
 const services = ref([]);
 
@@ -121,12 +132,15 @@ const servicesForAPI = computed(() => {
 });
 
 const submitServices = async () => {
+  isSubmitting.value = true;
   try {
     await postAdditionalServicesData(servicesForAPI.value);
     router.push({ name: "reservation-form" });
   } catch (error) {
     console.error("Error:", error);
     errorMessage.value = error.response.data[""][0];
+  } finally {
+    isSubmitting.value = false;
   }
 };
 
