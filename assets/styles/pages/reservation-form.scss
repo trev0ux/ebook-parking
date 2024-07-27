@@ -8,15 +8,16 @@
 
 
 .reservation-form {
-    .container {
-
-        @include media-breakpoint-up(lg) {
-            padding-left: 0;
-            padding-right: 0;
-        }
-    }
     &__main-content {
         padding: 20px 0 35px;
+
+        > .container {
+
+            @include media-breakpoint-up(lg) {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
     }
 
     &__banner {

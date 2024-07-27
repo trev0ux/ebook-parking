@@ -431,6 +431,6 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped>
 @import "~/assets/styles/pages/reservation-form.scss";
 </style>
