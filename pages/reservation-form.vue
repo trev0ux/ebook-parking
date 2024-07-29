@@ -142,8 +142,8 @@
             <article>
               <div class="reservation-form__card">
                 <div class="reservation-form__content-fields">
-                  <h4 v-if="titleFerryForm">{{ content.properties.titleFerryForm }}</h4>
-                  <p v-if="descriptionFerryForm">
+                  <h4 v-if="content.properties">{{ content.properties.titleFerryForm }}</h4>
+                  <p v-if="content.properties">
                     {{ content.properties.descriptionFerryForm }}
                   </p>
                   <fieldset>
@@ -223,7 +223,7 @@
             </template>
           </custom-modal>
           <div class="reservation-form__buttons">
-            <NuxtLink class="btn btn-secondary" :to="{ name: 'additional-services' }">Vorige</NuxtLink>
+            <NuxtLink class="btn btn-secondary" to="/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/">Vorige</NuxtLink>
             <div>
               <ul class="progress-steps">
                 <li class="progress-steps--previous"></li>
@@ -404,7 +404,7 @@ const submitReservation = async () => {
 
   try {
     await postReservationFormData(postData.value);
-    router.push({ name: "thank-you" });
+    router.push("/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/uw-gegevens/uw-reservering-is-bevestigd/");
   } catch (error) {
     if (error.response) {
       if (error.response.status === 400) {

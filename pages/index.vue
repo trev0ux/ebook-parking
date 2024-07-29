@@ -4,11 +4,7 @@
       <div class="container">
         <div class="reserve-page__details">
           <h3>{{ content.name }}</h3>
-          <ol class="breadcrumb">
-            <li>
-              <a href="#">{{ content.name }}</a>
-            </li>
-          </ol>
+          <Breadcrumb />
         </div>
       </div>
     </div>
@@ -52,8 +48,13 @@
             {{ errorMessage }}
           </div>
           <button class="btn btn-primary" type="submit" :disabled="isSubmitting">
-          Reserveer Nu
-          <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Reserveer Nu
+            <span
+              v-if="isSubmitting"
+              class="spinner-border spinner-border-sm me-2"
+              role="status"
+              aria-hidden="true"
+            ></span>
           </button>
         </form>
       </div>
@@ -67,6 +68,7 @@ import { addDays, format } from "date-fns";
 import CustomAccordion from "../components/custom-accordion.vue";
 import { getReservePage, postReserveData } from "@/services/api.ts";
 import { useRouter } from "vue-router";
+import Breadcrumb from "../components/breadcrumb.vue";
 
 const router = useRouter();
 const dateRange = ref(new Date());
@@ -100,7 +102,7 @@ const submitBooking = async () => {
 
   try {
     await postReserveData(bookingData);
-    router.push({ name: "available-places" });
+    router.push("/reserveer-nu/beschikbare-plaatsen/");
   } catch (error) {
     errorMessage.value = error.response.data[""][0];
     console.error("Error:", error);

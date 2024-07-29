@@ -23,13 +23,6 @@ const staticRouteFiles: string[] = [
   '~/pages/reservation-form.vue'
 ];
 
-const staticRouteNames: string[] = [
-  'reservation',
-  'available-places',
-  'additional-services',
-  'thank-you',
-  'reservation-form',
-];
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -47,41 +40,29 @@ export default defineNuxtConfig({
       ],
     }
   },
-  nitro: {
-    prerender: {
-      routes: ['/reserveer-nu']
-    }
-  },
-  redirects: [
-    {
-      source: '/',
-      destination: '/reserveer-nu',
-      statusCode: 301
-    }
-  ],
   hooks: {
     'pages:extend': async (pages) => {
       const cmsRoutes = await fetchRoutes();
 
       pages.splice(0, pages.length);
 
-      cmsRoutes.forEach((route: any, index: any) => {
+      cmsRoutes.forEach((route: any, index: number) => {
         const file = staticRouteFiles[index];
-        const name = staticRouteNames[index]
         const routeConfig: any = {
-          name: name,
+          name: route.name,
           path: route.path,
-          file: file
+          file: file,
         };
 
         if (index === 0) {
-          const firstRoute: any = {
-            name: staticRouteNames[1],
+          const rootRoute = {
+            name: "home",
             path: '/',
-            file: staticRouteFiles[1],
+            file: staticRouteFiles[0],
             redirect: route.path
           };
-          pages.push(firstRoute);
+
+          pages.push(rootRoute);
         }
 
         pages.push(routeConfig);
@@ -119,7 +100,6 @@ export default defineNuxtConfig({
   plugins: [
     '@/plugins/vue-datepicker',
     '@/plugins/axios',
-    //'@/plugins/dynamic-routes'
   ],
 
   compatibilityDate: '2024-07-18',

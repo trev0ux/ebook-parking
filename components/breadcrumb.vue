@@ -39,7 +39,6 @@ const breadcrumbs = computed(() => {
         path: breadcrumbPath,
       });
     } else {
-      // If no match found, use the last segment of the path
       const namePart = paths[index];
       breadcrumbsArray.push({
         name: formatRouteName(namePart),

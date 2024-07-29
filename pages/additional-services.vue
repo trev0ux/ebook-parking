@@ -49,7 +49,7 @@
             {{ errorMessage }}
           </div>
           <div class="additional-services__buttons">
-            <NuxtLink class="btn btn-secondary" :to="{ name: 'available-places' }"
+            <NuxtLink class="btn btn-secondary" to="/reserveer-nu/beschikbare-plaatsen/"
               >Vorige</NuxtLink
             >
             <div>
@@ -135,7 +135,7 @@ const submitServices = async () => {
   isSubmitting.value = true;
   try {
     await postAdditionalServicesData(servicesForAPI.value);
-    router.push({ name: "reservation-form" });
+    router.push("/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/uw-gegevens/");
   } catch (error) {
     console.error("Error:", error);
     errorMessage.value = error.response.data[""][0];

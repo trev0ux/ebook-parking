@@ -59,7 +59,7 @@
             {{ errorMessage }}
           </div>
           <div class="available-places__buttons">
-            <NuxtLink class="btn btn-secondary" :to="{ name: 'reservation' }"
+            <NuxtLink class="btn btn-secondary" to="/"
               >Vorige</NuxtLink
             >
             <div>
@@ -135,7 +135,7 @@ const submitPlaces = async () => {
   isSubmitting.value = true;
   try {
     await postAvailablePlacesData(placeData.value);
-    router.push({ name: "additional-services" });
+    router.push("/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/");
   } catch (error) {
     errorMessage.value = error.response.data[""][0];
   } finally {
