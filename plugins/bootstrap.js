@@ -1,9 +1,8 @@
 export default defineNuxtPlugin(nuxtApp => {
     if (import.meta.client) {
         return Promise.all([
-            import('bootstrap/dist/js/bootstrap.bundle'),
             import('bootstrap')
-        ]).then(([bootstrapBundle, { Tooltip }]) => {
+        ]).then(([{ Tooltip }]) => {
             nuxtApp.vueApp.directive('bs-tooltip', {
                 mounted(el, binding) {
                     new Tooltip(el, {

@@ -106,7 +106,7 @@ export default defineNuxtConfig({
   plugins: [
     '@/plugins/vue-datepicker',
     '@/plugins/axios',
-    { src: '@/plugins/bootstrap.client.js', mode: 'client' }
+    '@/plugins/bootstrap.js'
   ],
 
   compatibilityDate: '2024-07-18',
