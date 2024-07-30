@@ -22,10 +22,6 @@
             transition: none;
             box-shadow: none;
             color: $secondary !important;
-
-            &:after {
-                content: initial;
-            }
             
             &:not(.collapsed) {
                 border-bottom: 1px solid $white;

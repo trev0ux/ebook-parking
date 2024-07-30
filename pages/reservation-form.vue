@@ -1,13 +1,6 @@
 <template>
   <section class="reservation-form">
-    <div class="reservation-form__banner">
-      <div class="container">
-        <div class="reservation-form__details">
-          <h3>{{ content.name }}</h3>
-          <Breadcrumb />
-        </div>
-      </div>
-    </div>
+    <Banner :title="content.name"></Banner>
     <article class="reservation-form__main-content">
       <div class="container">
         <form @submit.prevent="submitReservation">
@@ -65,6 +58,7 @@
                       v-bind="$attrs"
                       v-model="reservation.ferryDepartureHour"
                       :options="populateSelect(reservation.ferryHours)"
+                      @change="updateField('FerryDepartureHour', $event.target.value)"
                       required
                     />
                     <custom-select
@@ -101,6 +95,7 @@
                       aria-label="Hours"
                       id="name"
                       v-bind="$attrs"
+                      @change="updateField('FerryReturnHour', $event.target.value)"
                       v-model="reservation.ferryReturnHour"
                       :options="populateSelect(reservation.ferryHours)"
                     />
@@ -126,6 +121,7 @@
                       aria-label="Payment Option"
                       id="name"
                       v-bind="$attrs"
+                      @change="updateField('FerryReturn', $event.target.value)"
                       v-model="reservation.ferryReturn"
                       :options="populateSelect(reservation.ferries)"
                     />
@@ -142,14 +138,19 @@
             <article>
               <div class="reservation-form__card">
                 <div class="reservation-form__content-fields">
-                  <h4 v-if="content.properties">{{ content.properties.titleFerryForm }}</h4>
+                  <h4 v-if="content.properties">
+                    {{ content.properties.titleFerryForm }}
+                  </h4>
                   <p v-if="content.properties">
                     {{ content.properties.descriptionFerryForm }}
                   </p>
                   <fieldset>
                     <custom-input
                       label="MemberName"
+                      @input="updateField('MemberName', $event.target.value)"
+                      :error-message="getFieldError('MemberName')"
                       id="MemberName"
+                      required
                       v-model="reservation.memberName"
                     ></custom-input>
                     <custom-input
@@ -160,6 +161,7 @@
                     <custom-input
                       label="Telefoon"
                       id="Telefoon"
+                      @input="updateField('PhoneNumber', $event.target.value)"
                       v-model="reservation.phoneNumber"
                       required
                       :error-message="getFieldError('PhoneNumber')"
@@ -167,6 +169,7 @@
                     <custom-input
                       label="Email"
                       id="Email"
+                      @input="updateField('Email', $event.target.value)"
                       required
                       v-model="reservation.email"
                       :error-message="getFieldError('Email')"
@@ -189,7 +192,7 @@
                       label="Payment Option"
                       id="name"
                       v-bind="$attrs"
-                      v-model="reservation.paymentOption"
+                      v-model="paymentOptionString"
                       :options="populateSelect(reservation.paymentOptionsList)"
                     />
                   </fieldset>
@@ -214,16 +217,24 @@
               {{ errorMessage }}
             </div>
           </div>
-          <custom-modal v-if="showModal" @close="showModal = false" :title="content.properties.modelTitle">
+          <custom-modal
+            v-if="showModal"
+            @close="showModal = false"
+            :title="content.properties.modelTitle"
+          >
             <template #body>
-                <div v-html="content.properties.modelText.markup"></div>
+              <div v-html="content.properties.modelText.markup"></div>
             </template>
             <template #footer>
               <button type="submit" class="btn btn-primary">IK GA AKKOORD</button>
             </template>
           </custom-modal>
           <div class="reservation-form__buttons">
-            <NuxtLink class="btn btn-secondary" to="/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/">Vorige</NuxtLink>
+            <NuxtLink
+              class="btn btn-outline-secondary"
+              to="/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/"
+              >Vorige</NuxtLink
+            >
             <div>
               <ul class="progress-steps">
                 <li class="progress-steps--previous"></li>
@@ -233,7 +244,12 @@
                 <li></li>
               </ul>
             </div>
-            <button class="btn btn-primary" type="button" @click="showModal = true" :disabled="isSubmitting">
+            <button
+              class="btn btn-secondary"
+              type="button"
+              @click="showModal = true"
+              :disabled="isSubmitting"
+            >
               Bevestig
               <span
                 v-if="isSubmitting"
@@ -257,13 +273,14 @@ import CustomModal from "../components/custom-modal.vue";
 import CustomCheckbox from "../components/forms/custom-check.vue";
 import { format } from "date-fns";
 import { useRouter } from "vue-router";
+import Banner from "../components/banner.vue";
 
 import {
   getReservationPage,
   postReservationFormData,
   getReservationData,
 } from "@/services/api.ts";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 
 const reservation = ref([]);
 const content = ref([]);
@@ -274,6 +291,14 @@ const isFastFerry = ref("No");
 const validationErrors = ref([]);
 const router = useRouter();
 const isSubmitting = ref(false);
+
+const paymentOptionString = computed(() => {
+  return reservation.value.paymentOption != null
+    ? reservation.value.paymentOption === 0
+      ? ""
+      : reservation.value.paymentOption.toString()
+    : "";
+});
 
 const postData = computed(() => {
   if (!reservation.value) return null;
@@ -348,8 +373,16 @@ const getFieldError = (fieldName) => {
   return hasFieldError(fieldName) ? validationErrors.value[fieldName][0] : "";
 };
 
-const clearValidationErrors = () => {
-  validationErrors.value = null;
+const clearValidationIfPopulated = (fieldName, fieldValue) => {
+  if (hasFieldError(fieldName) && fieldValue) {
+    delete validationErrors.value[fieldName];
+  }
+};
+
+const updateField = (fieldName, value) => {
+  reservation[fieldName] = value;
+
+  clearValidationIfPopulated(fieldName, value);
 };
 
 const populateSelect = (arr) => {
@@ -381,6 +414,11 @@ const getData = async () => {
   try {
     const response = await getReservationData();
     reservation.value = response;
+
+    if (reservation.value.memberId == null) {
+      reservation.value.memberName = "";
+    }
+
   } catch (error) {
     console.error("Error:", error);
   }
@@ -390,7 +428,7 @@ const getPageContent = async () => {
   try {
     const response = await getReservationPage();
     content.value = response;
-    console.log(content.value)
+    console.log(content.value);
   } catch (error) {
     console.error("Error:", error);
   }
@@ -404,19 +442,21 @@ const submitReservation = async () => {
 
   try {
     await postReservationFormData(postData.value);
-    router.push("/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/uw-gegevens/uw-reservering-is-bevestigd/");
+    router.push(
+      "/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/uw-gegevens/uw-reservering-is-bevestigd/"
+    );
   } catch (error) {
     if (error.response) {
       if (error.response.status === 400) {
-      validationErrors.value = error.response.data.errors;
-    } else {
-      if (error.title) {
-        errorMessage.value = error.title;
+        validationErrors.value = error.response.data.errors;
       } else {
-        errorMessage.value = error.response.data[""][0];
+        if (error.title) {
+          errorMessage.value = error.title;
+        } else {
+          errorMessage.value = error.response.data[""][0];
+        }
+        console.error("An error occurred:", error);
       }
-      console.error("An error occurred:", error);
-    }
     } else {
       console.error("An error occurred:", error);
     }

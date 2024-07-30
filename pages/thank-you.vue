@@ -1,13 +1,6 @@
 <template>
   <section class="thank-you">
-    <div class="thank-you__banner">
-      <div class="container">
-        <div class="thank-you__details">
-          <h3>{{ content.name }}</h3>
-          <Breadcrumb />
-        </div>
-      </div>
-    </div>
+    <Banner :title="content.name"></Banner>
     <article class="thank-you__payment-summary">
       <div class="container">
         <div class="thank-you__thanks" v-if="content.properties">
@@ -22,44 +15,104 @@
         <section class="thank-you__total-summary">
           <h4>Boeking Hervatten</h4>
           <div>
-            <p>Reserveringsnummer:</p>
-            <p>{{ reservation.reservationItemId }}</p>
+            <h5>Reserveringsnummer:</h5>
+            <p>{{ reservation.reservationId }}</p>
           </div>
           <div>
-            <p>Naam:</p>
-            <p>{{ reservation.name }}</p>
+            <h5>Naam:</h5>
+            <p>{{ reservation.reservationName }}</p>
           </div>
           <div>
-            <p>Email adres:</p>
-            <p>{{ reservation.email }}</p>
+            <h5>Email adres:</h5>
+            <p>{{ reservation.emailAddress }}</p>
           </div>
           <div>
-            <p>Kenteken:</p>
-            <p>{{ reservation.licensePlate }}</p>
+            <h5>Kenteken:</h5>
+            <p>{{ reservation.carIdentifier }}</p>
           </div>
           <div>
-            <p>Aankomstdatum:</p>
-            <p>{{ reservation.arrivelDate }}</p>
+            <h5>Aankomstdatum:</h5>
+            <p>{{ reservation.checkinDate }}</p>
           </div>
-          <div>
-            <p>Vertrekdatum:</p>
-            <p>{{ reservation.departureDate }}</p>
-          </div>
-          <div>
-            <p>Locatie:</p>
-            <p>{{ reservation.location }}</p>
-          </div>
-          <div>
-            <p>Aantal auto's:</p>
-            <p>{{ reservation.numberOfPlaces }}</p>
-          </div>
-          <div>
-            <p>Aanvullende diensten:</p>
-            <p>{{ reservation.additionalServices }}</p>
-          </div>
+          <div class="accordion thank-you__accordion" id="finalAcordion2">
+          <custom-accordion
+            title="Reservation Items"
+            item-id="collapse3"
+            parent-id="finalAcordion2"
+          >
+          <template #description>
+            <section class="thank-you__summary-details thank-you__summary-details--four-columns">
+            <header>
+              <h5>Vergoeding</h5>
+              <h5>Prijs</h5>
+              <h5>Aantal auto's</h5>
+              <h5>Totaal</h5>
+            </header>
+            <article v-for="(item, index) in reservation.reservationItems" :key="index">
+              <div>
+                <p>
+                  {{ item.name }}
+                </p>
+                <p>€ {{ item.price.toFixed(2) }}</p>
+                <p>{{ item.quantity }}</p>
+                <p>€ {{ item.total.toFixed(2) }}</p>
+              </div>
+            </article>
+          </section>
+          </template>
+          </custom-accordion>
+        </div>
+        <div class="accordion thank-you__accordion" id="finalAcordion">
+          <custom-accordion
+            title="Services"
+            item-id="collapse2"
+            parent-id="finalAcordion"
+          >
+          <template #description>
+            <section class="thank-you__summary-details">
+            <header>
+              <h5>Diensten</h5>
+              <h5>Evalueer</h5>
+              <h5>Aantal stuks</h5>
+              <h5>Totaal</h5>
+              <h5>Vaste prijs</h5>
+            </header>
+            <article v-for="(item, index) in reservation.services" :key="index">
+              <div>
+                <p>
+                <b>{{ item.name }}</b>   
+                  <p v-html="item.customerInfo"></p>
+                </p>
+                <p>€ {{ item.price.toFixed(2) }}</p>
+                <p>{{ item.selectedNumberOfSpaces }}</p>
+                <p>€ {{ item.totalPrice.toFixed(2) }}</p>
+                <p class="d-flex justify-content-end align-items-start">
+                  <button
+                    type="button"
+                    class="btn p-0"
+                    v-if="!item.fixedPrice"
+                    v-bs-tooltip:right="'Deze dienst heeft geen vaste prijs. De prijs wordt berekend en in rekening gebracht bij het afrekenen.'"
+                  >
+                    <Icon name="TooltipIcon"></Icon>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn p-0"
+                    v-else
+                    v-bs-tooltip:right="'Deze dienst heeft geen vaste prijs. De prijs wordt berekend en in rekening gebracht bij het afrekenen.'"
+                  >
+                    <Icon name="TooltipIcon"></Icon>
+                  </button>
+                </p>
+              </div>
+            </article>
+          </section>
+          </template>
+          </custom-accordion>
+        </div>
           <div class="thank-you__total">
             <h6>Total Costs</h6>
-            <h6>{{ reservation.totalCostInlcudingVAT }}</h6>
+            <h6>{{ reservation.totalPrice }}</h6>
           </div>
         </section>
         <div class="thank-you__buttons">
@@ -84,7 +137,10 @@
 </style>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
+import Banner from "~/components/banner.vue";
+import { Icon } from "#components";
+import CustomAccordion from "../components/custom-accordion.vue";
 
 import {
   getReservationConfirmedData,

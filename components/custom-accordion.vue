@@ -19,6 +19,7 @@
       :data-bs-parent="parentId ? '#' + parentId : null"
     >
       <div v-html="description"></div>
+      <slot name="description"></slot>
     </div>
   </div>
 </template>
@@ -34,7 +35,7 @@ export default {
     },
     description: {
       type: String,
-      required: true,
+      required: false,
     },
     itemId: {
       type: String,

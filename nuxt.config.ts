@@ -7,7 +7,8 @@ const fetchRoutes = async () => {
     const response = await axios.get(process.env.NUXT_PUBLIC_API_URL + '/umbraco/delivery/api/v2/content?fetch=descendants%3A%2F&skip=0&take=10&fields=properties%5Burl%5D');
     return response.data.items.map((item: any) => ({
       name: item.name,
-      path: item.route.path
+      path: item.route.path,
+      contentType: item.contentType
     }));
   } catch (error) {
     console.error(error);
@@ -15,30 +16,37 @@ const fetchRoutes = async () => {
   }
 }
 
-const staticRouteFiles: string[] = [
-  '~/pages/index.vue',
-  '~/pages/available-places.vue',
-  '~/pages/additional-services.vue',
-  '~/pages/thank-you.vue',
-  '~/pages/reservation-form.vue'
-];
+const staticRouteFiles: Record<string, string> = {
+  'reservationPage': '~/pages/index.vue',
+  'availablePlaces': '~/pages/available-places.vue',
+  'additionalServices': '~/pages/additional-services.vue',
+  'reservationComplete': '~/pages/thank-you.vue',
+  'bookingFormPage': '~/pages/reservation-form.vue'
+};
 
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  css: [{ src: '~/assets/styles/globals.scss', lang: 'sass' }],
+  css: [
+    { src: '~/assets/styles/globals.scss', lang: 'sass' },
+  ],
   app: {
     head: {
-      title: "Ebook Parking",
-      script: [
-        {
-          src: "https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js",
-          integrity:
-            "sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa",
-          crossorigin: "anonymous",
-        },
+      title: 'Parkeren-harlingen.nl | Parkeren op loopafstand van de boten',
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1.0',
+      meta: [
+        { name: 'description', content: 'Onze parkeerfaciliteit bevindt zich op slechts 300m lopen vanaf de veerterminal naar Terschelling en Vlieland. Reserveren noodzakelijk: Reserveer Online!' },
+        { name: 'keywords', content: 'parkeerfaciliteit,Terschelling,Vlieland' },
+        { name: 'author', content: 'Double Design & Development' }
       ],
+      link: [
+        { rel: 'icon', type: 'image/png', href: '/favicon.png' }
+      ]
     }
+  },
+  build: {
+    transpile: ['bootstrap']
   },
   hooks: {
     'pages:extend': async (pages) => {
@@ -47,7 +55,7 @@ export default defineNuxtConfig({
       pages.splice(0, pages.length);
 
       cmsRoutes.forEach((route: any, index: number) => {
-        const file = staticRouteFiles[index];
+        const file = staticRouteFiles[route.contentType];
         const routeConfig: any = {
           name: route.name,
           path: route.path,
@@ -82,8 +90,6 @@ export default defineNuxtConfig({
         }
       }
       removePagesMatching(/\.ts$/, pages);
-
-      console.log('Final routes:', pages);
     }
   },
   runtimeConfig: {
@@ -100,6 +106,7 @@ export default defineNuxtConfig({
   plugins: [
     '@/plugins/vue-datepicker',
     '@/plugins/axios',
+    { src: '@/plugins/bootstrap.client.js', mode: 'client' }
   ],
 
   compatibilityDate: '2024-07-18',

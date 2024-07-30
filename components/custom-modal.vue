@@ -1,6 +1,6 @@
 <template>
     <div class="modal custom-modal fade show d-block" tabindex="-1" style="background-color: rgba(0, 0, 0, 0.5);" @click.self="closeModal">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header custom-modal__header">
             <h5 class="modal-title">{{ title }}</h5>

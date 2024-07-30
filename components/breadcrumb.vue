@@ -3,9 +3,11 @@
     <ol class="breadcrumb">
       <li v-for="(breadcrumb, index) in breadcrumbs" :key="index">
         <NuxtLink v-if="index < breadcrumbs.length - 1" :to="breadcrumb.path">
+          <Icon name="ChevronIcon"></Icon>
           {{ breadcrumb.name }}
         </NuxtLink>
         <span v-else>
+          <Icon name="ChevronIcon"></Icon>
           {{ breadcrumb.name }}
         </span>
       </li>
@@ -16,6 +18,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { Icon } from "#components";
 
 const route = useRoute();
 const router = useRouter();

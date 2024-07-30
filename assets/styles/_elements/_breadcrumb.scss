@@ -13,11 +13,27 @@
 
     li {
         @include font-size($font-small);
+        display: flex;
+        align-items: center;
+
+        &:first-child {
+            svg {
+                display: none;
+            }
+        }
 
         a {
             @include font-size($font-small);
             color: $starfleet-blue;
             text-decoration: none;
+        }
+    }
+
+    span, a {
+        svg {
+            stroke: $light-black;
+            height: 20px;
+            width: 20px;
         }
     }
 

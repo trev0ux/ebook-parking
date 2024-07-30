@@ -1,13 +1,6 @@
 <template>
   <section class="reserve-page">
-    <div class="reserve-page__banner">
-      <div class="container">
-        <div class="reserve-page__details">
-          <h3>{{ content.name }}</h3>
-          <Breadcrumb />
-        </div>
-      </div>
-    </div>
+    <Banner :title="content.name"></Banner>
     <article class="reserve-page__main-content">
       <div class="container">
         <div class="accordion" id="reserveAcordion" v-if="content && content.properties">
@@ -47,7 +40,7 @@
           <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">
             {{ errorMessage }}
           </div>
-          <button class="btn btn-primary" type="submit" :disabled="isSubmitting">
+          <button class="btn btn-secondary" type="submit" :disabled="isSubmitting">
             Reserveer Nu
             <span
               v-if="isSubmitting"
@@ -68,7 +61,7 @@ import { addDays, format } from "date-fns";
 import CustomAccordion from "../components/custom-accordion.vue";
 import { getReservePage, postReserveData } from "@/services/api.ts";
 import { useRouter } from "vue-router";
-import Breadcrumb from "../components/breadcrumb.vue";
+import Banner from "../components/banner.vue";
 
 const router = useRouter();
 const dateRange = ref(new Date());

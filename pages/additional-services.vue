@@ -1,13 +1,6 @@
 <template>
   <section class="additional-services">
-    <div class="additional-services__banner">
-      <div class="container">
-        <div class="additional-services__details">
-          <h3>{{ content.name }}</h3>
-          <Breadcrumb />
-        </div>
-      </div>
-    </div>
+    <Banner :title="content.name"></Banner>
     <article class="additional-services__main-content">
       <div class="container">
         <div class="accordion" id="reserveAcordion" v-if="content && content.properties">
@@ -49,7 +42,7 @@
             {{ errorMessage }}
           </div>
           <div class="additional-services__buttons">
-            <NuxtLink class="btn btn-secondary" to="/reserveer-nu/beschikbare-plaatsen/"
+            <NuxtLink class="btn btn-outline-secondary" to="/reserveer-nu/beschikbare-plaatsen/"
               >Vorige</NuxtLink
             >
             <div>
@@ -62,7 +55,7 @@
                 <li></li>
               </ul>
             </div>
-            <button class="btn btn-primary" type="submit" :disabled="isSubmitting">
+            <button class="btn btn-secondary" type="submit" :disabled="isSubmitting">
               Reserveer Nu
               <span
                 v-if="isSubmitting"
@@ -82,7 +75,7 @@
 import { ref, onMounted } from "vue";
 import CustomAccordion from "../components/custom-accordion.vue";
 import CustomSelect from "../components/forms/custom-select.vue";
-import Breadcrumb from "../components/breadcrumb.vue";
+import Banner from "../components/banner.vue";
 import {
   getAdditionalServicesPage,
   getServices,
@@ -117,16 +110,9 @@ const populateSelect = (numberOfSpaces) => {
 
 const servicesForAPI = computed(() => {
   return {
-    items: services.value.map((service) => ({
+    services: services.value.map((service) => ({
       serviceId: service.serviceId,
-      name: service.name,
-      adminDescription: service.adminDescription,
-      customerInfo: service.customerInfo,
-      price: service.price,
-      adminOnly: service.adminOnly,
-      fixedPrice: service.fixedPrice,
-      selectedNumberOfSpaces: service.quantity,
-      numberOfSpaces: service.quantity,
+      selectedNumberOfSpaces: parseInt(service.quantity),
     })),
   };
 });

@@ -1,13 +1,6 @@
 <template>
   <section class="available-places">
-    <div class="available-places__banner">
-      <div class="container">
-        <div class="available-places__details">
-          <h3>{{ content.name }}</h3>
-          <Breadcrumb />
-        </div>
-      </div>
-    </div>
+    <Banner :title="content.name"></Banner>
     <article class="available-places__main-content">
       <div class="container">
         <div class="accordion" id="reserveAcordion" v-if="content && content.properties">
@@ -59,7 +52,7 @@
             {{ errorMessage }}
           </div>
           <div class="available-places__buttons">
-            <NuxtLink class="btn btn-secondary" to="/"
+            <NuxtLink class="btn btn-outline-secondary" to="/"
               >Vorige</NuxtLink
             >
             <div>
@@ -71,7 +64,7 @@
                 <li></li>
               </ul>
             </div>
-            <button class="btn btn-primary" type="submit" :disabled="isSubmitting">
+            <button class="btn btn-secondary" type="submit" :disabled="isSubmitting">
               Doorgann Met
               <span
                 v-if="isSubmitting"
@@ -92,7 +85,7 @@ import { ref, onMounted, computed } from "vue";
 import { useNuxtApp } from "#app";
 import CustomAccordion from "../components/custom-accordion.vue";
 import CustomSelect from "../components/forms/custom-select.vue";
-import Breadcrumb from "../components/breadcrumb.vue";
+import Banner from "../components/banner.vue";
 import { getAvailablePlacesPage, postAvailablePlacesData } from "@/services/api.ts";
 import { useRouter } from "vue-router";
 
