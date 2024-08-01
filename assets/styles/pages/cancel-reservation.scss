@@ -1,0 +1,107 @@
+@import "../_base/typography";
+@import "../_base/variables";
+@import "bootstrap/scss/_functions";
+@import "bootstrap/scss/_variables";
+@import "bootstrap/scss/mixins/_breakpoints";
+
+.cancelation-page {
+
+    &__container {
+
+        @include media-breakpoint-up(lg) {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+
+    &__page-content {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+
+        @include media-breakpoint-down(md) {
+            flex-direction: column;
+        }
+    }
+
+    &__user-data {
+        flex: 0 0 60%;
+        margin-top: 32px;
+        background-color: $white-edgar;
+        border-radius: 12px;
+        padding: 25px !important;
+
+        @include media-breakpoint-down(md) {
+            margin-top: 0px;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            @include font-size($font-small);
+            color: $mandrake;
+            margin-bottom: 0;
+            padding: 20px 0;
+
+            &:nth-child(1) {
+                border-bottom: none !important;
+                padding-bottom: 0 !important;
+            }
+
+            &:not(:last-child) {
+                border-bottom: 2px solid $white;
+            }
+
+            h2 {
+                @include font-size($font-regular);
+                font-weight: $font-weight--bold;
+                color: $secondary;
+                margin-bottom: 16px;
+                text-align: center;
+                width: 100%;
+
+            }
+
+            h3 {
+                @include font-size($font-small);
+                font-weight: $font-weight--bold;
+                color: $secondary;
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    aside {
+        flex: 0 0 38%;
+        margin-top: 32px;
+
+        @include media-breakpoint-down(md) {
+            margin-top: 0;
+        }
+
+        >form {
+            background-color: $white-edgar;
+            border-radius: 12px;
+            padding: 25px;
+
+            >div {
+                padding: 16px;
+                border-radius: 4px;
+                background-color: #fef3cd;
+
+                h4 {
+                    color: #866911;
+                    text-transform: uppercase;
+                    font-weight: $font-weight--bold;
+                }
+            }
+        }
+
+        button {
+            margin-top: 32px;
+            width: 100%;
+        }
+
+    }
+
+}

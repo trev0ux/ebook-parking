@@ -21,7 +21,9 @@ const staticRouteFiles: Record<string, string> = {
   'availablePlaces': '~/pages/available-places.vue',
   'additionalServices': '~/pages/additional-services.vue',
   'reservationComplete': '~/pages/thank-you.vue',
-  'bookingFormPage': '~/pages/reservation-form.vue'
+  'bookingFormPage': '~/pages/reservation-form.vue',
+  'cancelReservation': '~/pages/cancel-reservation.vue',
+  'canceledReservation': '~/pages/confirmed-cancelation.vue'
 };
 
 

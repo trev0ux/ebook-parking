@@ -57,3 +57,9 @@ export const postReservationFormData = (data: any) => postPageData('/api/booking
 export const getReservationConfirmedData = () => fetchPageData('/api/booking/Finish');
 
 export const getReservationConfirmedPage = () => fetchPageData('/umbraco/delivery/api/v2/content/item/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/uw-gegevens/uw-reservering-is-bevestigd/');
+
+export const postCancelationFormData = (data: any) => postPageData('/api/Cancellation/Post', data);
+
+export const getCancelationPage = () => fetchPageData('/umbraco/delivery/api/v2/content/item/annuleer-reservering/');
+
+export const getCancelationConfirmedPage = () => fetchPageData('/umbraco/delivery/api/v2/content/item/annuleer-reservering/bedankt-en-hopelijk-tot-ziens/');

@@ -1,0 +1,34 @@
+@import "../_base/typography";
+@import "../_base/variables";
+@import "bootstrap/scss/_functions";
+@import "bootstrap/scss/_variables";
+@import "bootstrap/scss/mixins/_breakpoints";
+
+
+.confirmed-cancelation {
+
+    &__content {
+        background-color: $white-edgar;
+        border-radius: 12px;
+        padding: 25px;
+        text-align: center;
+
+        h2 {
+            @include font-size($font-big);
+            font-weight: $font-weight--bold;
+            color: $secondary;
+            margin-bottom: 16px;
+        }
+
+        p {
+            color: $secondary;
+        }
+
+        >div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+    }
+}
