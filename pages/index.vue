@@ -59,7 +59,7 @@
 import { ref, computed, onMounted } from "vue";
 import { addDays, format } from "date-fns";
 import CustomAccordion from "../components/custom-accordion.vue";
-import { getReservePage, postReserveData } from "@/services/api.ts";
+import { getReservePage, getReservationData, postReserveData } from "@/services/api.ts";
 import { useRouter } from "vue-router";
 import Banner from "../components/banner.vue";
 
@@ -69,11 +69,21 @@ const content = ref({});
 const defaultFormat = "dd-MM-yyyy";
 const errorMessage = ref("");
 const isSubmitting = ref(false);
+const date = ref([]);
 
 const startDate = computed(() => {
   const now = new Date();
   return new Date(now.getFullYear(), now.getMonth(), 1);
 });
+
+const isArrivalPast = computed(() => isDatePast(dateRange.value[0]));
+const isDeparturePast = computed(() => isDatePast(dateRange.value[1]));
+
+const isDatePast = (dateString) => {
+  const now = new Date();
+  const dateObj = new Date(dateString);
+  return dateObj < now;
+};
 
 const formattedDateRange = computed(() => {
   if (!dateRange.value || dateRange.value.length !== 2) {
@@ -94,6 +104,7 @@ const submitBooking = async () => {
   isSubmitting.value = true;
 
   try {
+    localStorage.setItem('dateRange', JSON.stringify(dateRange.value));
     await postReserveData(bookingData);
     router.push("/reserveer-nu/beschikbare-plaatsen/");
   } catch (error) {
@@ -113,6 +124,27 @@ const getReserveContent = async () => {
   }
 };
 
+const getReserveDate = async () => {
+  const storedDateRange = localStorage.getItem('dateRange');
+
+  if (!storedDateRange) {
+    return;
+  }
+
+  try {
+    const response = await getReservationData();
+    date.value = response;
+
+    const isEntireStayPast = computed(() => isArrivalPast.value && isDeparturePast.value);
+    if (isEntireStayPast && (date.value.arrivelDate && date.value.departureDate)) {
+      dateRange.value = [date.value.arrivelDate, date.value.departureDate];
+      localStorage.setItem('dateRange', JSON.stringify(dateRange.value));
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 const setInitialDateRange = () => {
   const today = new Date();
   const tomorrow = addDays(today, 1);
@@ -122,6 +154,7 @@ const setInitialDateRange = () => {
 onMounted(() => {
   setInitialDateRange();
   getReserveContent();
+  getReserveDate();
 });
 </script>
 

@@ -161,6 +161,8 @@
                     <custom-input
                       label="Telefoon"
                       id="Telefoon"
+                      v-bind="$attrs"
+                      type="tel"
                       @input="updateField('PhoneNumber', $event.target.value)"
                       v-model="reservation.phoneNumber"
                       required
