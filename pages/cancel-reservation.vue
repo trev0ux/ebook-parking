@@ -92,6 +92,8 @@ import { useNuxtApp } from "#app";
 import Banner from "../components/banner.vue";
 import CustomCheckbox from "../components/forms/custom-check.vue";
 import { postCancelationFormData, getCancelationPage } from "@/services/api.ts";
+import { handleApiError } from '@/utils/errorUtils'
+import { useRouteStore } from "@/stores/routeStore";
 
 const route = useRoute();
 const router = useRouter();
@@ -103,6 +105,11 @@ const postData = ref({});
 const validationErrors = ref([]);
 const content = ref([]);
 const preloader = ref(false);
+const routeStore = useRouteStore();
+
+const contentTypeRoutes = computed(() =>
+  routeStore.getRoutesByContentType("canceledReservation")
+);
 
 const hasFieldError = (fieldName) => {
   return validationErrors.value && validationErrors.value[fieldName];
@@ -114,21 +121,13 @@ const getFieldError = (fieldName) => {
 
 const submitCancelation = async () => {
   isSubmitting.value = true;
+  const confirmCancelationRoute = contentTypeRoutes.value[0];
 
   try {
     await postCancelationFormData(postData.value);
-    router.push(
-      "/annuleer-reservering/bedankt-en-hopelijk-tot-ziens/"
-    );
-    
+    router.push(confirmCancelationRoute.path);
   } catch (error) {
-    if (error.response) {
-      if (error.response.status === 400) {
-        validationErrors.value = error.response.data.errors;
-      } 
-    } else {
-      console.error("An error occurred:", error);
-    }
+    handleApiError(error, validationErrors, errorMessage)
   } finally {
     isSubmitting.value = false;
   }
@@ -180,7 +179,7 @@ const getData = async () => {
     const response = await $axios.get(`/api/Cancellation/Get?token=${token}`);
     data.value = response.data;
     postData.value = populatePostData(token)
-  } catch (err) {
+  } catch (error) {
     handleApiError(error, null, errorMessage)
   } finally {
     preloader.value = false;
@@ -191,6 +190,7 @@ onMounted(async () => {
   preloader.value = true;
   getData();
   getPageContent();
+  await routeStore.initializeRoutes();
 });
 </script>
 <style lang="sass">
