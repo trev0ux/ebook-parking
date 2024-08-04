@@ -11,11 +11,14 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
+    "@pinia/nuxt": "^0.5.2",
     "@popperjs/core": "^2.11.8",
     "@vuepic/vue-datepicker": "^9.0.0",
     "axios": "^1.7.2",
     "date-fns": "^3.6.0",
+    "dotenv": "^16.4.5",
     "nuxt": "^3.12.3",
+    "pinia": "^2.2.0",
     "uuid": "^10.0.0",
     "vue": "latest"
   },

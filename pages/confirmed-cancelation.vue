@@ -1,6 +1,6 @@
 <template>
     <section class="confirmed-cancelation">
-        <Banner :title="content.name"></Banner>
+        <Banner :title="content.name" hide-breadcrumb></Banner>
         <div class="container">
             <article class="confirmed-cancelation__content" v-if="content.properties">
                 <h2>{{ content.properties.topMessage }}</h2>
@@ -17,6 +17,7 @@ import {
   getCancelationConfirmedPage,
 } from "@/services/api.ts";
 import { ref, onMounted } from "vue";
+import { handleApiError } from '@/utils/errorUtils'
 
 
 const content = ref([])
@@ -25,9 +26,8 @@ const getPageContent = async () => {
   try {
     const response = await getCancelationConfirmedPage();
     content.value = response;
-    console.log(content.value);
   } catch (error) {
-    console.error("Error:", error);
+    handleApiError(error, null, errorMessage)
   }
 };
 

@@ -1,82 +1,89 @@
 <template>
   <section class="available-places">
-    <Banner :title="content.name"></Banner>
-    <article class="available-places__main-content">
-      <div class="container">
-        <div class="accordion" id="reserveAcordion" v-if="content && content.properties">
-          <custom-accordion
-            :title="content.properties.accordionTitle"
-            :description="content.properties.accordionContent.markup"
-            item-id="collapse1"
-            parent-id="reserveAcordion"
-          />
-        </div>
-        <form @submit.prevent="submitPlaces">
-          <section class="available-places__services-form">
-            <div class="available-places__card">
-              <h4>Aantal parkeerplaatsen</h4>
+    <div class="preloader" v-if="preloader">
+      <div class="preloader__image"></div>
+    </div>
+    <div v-else>
+      <Banner :title="content.name"></Banner>
+      <article class="available-places__main-content">
+        <div class="container">
+          <div
+            class="accordion"
+            id="reserveAcordion"
+            v-if="content && content.properties"
+          >
+            <custom-accordion
+              :title="content.properties.accordionTitle"
+              :description="content.properties.accordionContent.markup"
+              item-id="collapse1"
+              parent-id="reserveAcordion"
+            />
+          </div>
+          <form @submit.prevent="submitPlaces">
+            <section class="available-places__services-form">
+              <div class="available-places__card">
+                <h4>Aantal parkeerplaatsen</h4>
 
-              <div
-                v-for="(place, index) in places"
-                :key="'places' + place.index"
-                class="available-places__quantity"
-              >
-                <p>{{ place.name }}</p>
-                <div>
-                  <custom-select
-                    label="Aantal auto's"
-                    id="name"
-                    v-bind="$attrs"
-                    v-model="place.selectedNumberOfSpaces"
-                    :options="populateSelect(place.numberOfSpaces)"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="available-places__card">
-              <h4>Prijs</h4>
-              <div class="available-places__summary-total">
-                <div v-for="(place, index) in places" :key="index">
+                <div
+                  v-for="(place, index) in places"
+                  :key="'places' + index"
+                  class="available-places__quantity"
+                >
                   <p>{{ place.name }}</p>
-                  <h5>€ {{ place.price.toFixed(2) }}</h5>
-                </div>
-                <div v-if="places.length > 0">
-                  <p>Totale prijs parkeren</p>
-                  <h5>€ {{ totalValue }}</h5>
+                  <div>
+                    <custom-select
+                      label="Aantal auto's"
+                      id="name"
+                      v-bind="$attrs"
+                      v-model="place.selectedNumberOfSpaces"
+                      :options="populateSelect(place.numberOfSpaces)"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
+              <div class="available-places__card">
+                <h4>Prijs</h4>
+                <div class="available-places__summary-total">
+                  <div v-for="(place, index) in places" :key="index">
+                    <p>{{ place.name }}</p>
+                    <h5>€ {{ place.price.toFixed(2) }}</h5>
+                  </div>
+                  <div v-if="places.length > 0">
+                    <p>Totale prijs parkeren</p>
+                    <h5>€ {{ totalValue }}</h5>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">
+              {{ errorMessage }}
             </div>
-          </section>
-          <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">
-            {{ errorMessage }}
-          </div>
-          <div class="available-places__buttons">
-            <NuxtLink class="btn btn-outline-secondary" to="/"
-              >Vorige</NuxtLink
-            >
-            <div>
-              <ul class="progress-steps">
-                <li class="progress-steps--previous"></li>
-                <li class="progress-steps--active"></li>
-                <li></li>
-                <li></li>
-                <li></li>
-              </ul>
+            <div class="available-places__buttons">
+              <NuxtLink class="btn btn-outline-secondary" to="/">Vorige</NuxtLink>
+              <div>
+                <ul class="progress-steps">
+                  <li class="progress-steps--previous"></li>
+                  <li class="progress-steps--active"></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </div>
+              <button class="btn btn-secondary" type="submit" :disabled="isSubmitting">
+                Doorgann Met
+                <span
+                  v-if="isSubmitting"
+                  class="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+              </button>
             </div>
-            <button class="btn btn-secondary" type="submit" :disabled="isSubmitting">
-              Doorgann Met
-              <span
-                v-if="isSubmitting"
-                class="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-            </button>
-          </div>
-        </form>
-      </div>
-    </article>
+          </form>
+        </div>
+      </article>
+    </div>
   </section>
 </template>
 
@@ -88,16 +95,23 @@ import CustomSelect from "../components/forms/custom-select.vue";
 import Banner from "../components/banner.vue";
 import { getAvailablePlacesPage, postAvailablePlacesData } from "@/services/api.ts";
 import { useRouter } from "vue-router";
+import { useRouteStore } from "@/stores/routeStore";
+import { handleApiError } from '@/utils/errorUtils'
 
 import { v4 as uuidv4 } from "uuid";
 
 const router = useRouter();
+const contentTypeRoutes = computed(() =>
+  routeStore.getRoutesByContentType("additionalServices")
+);
 
 const { $axios } = useNuxtApp();
 const content = ref({});
 const errorMessage = ref("");
 const places = ref([]);
 const isSubmitting = ref(false);
+const routeStore = useRouteStore();
+const preloader = ref(false)
 
 const placeData = computed(() => {
   if (!places.value || places.value.length === 0) {
@@ -126,11 +140,12 @@ const totalValue = computed(() => {
 
 const submitPlaces = async () => {
   isSubmitting.value = true;
+  const additionalServicesRoute = contentTypeRoutes.value[0];
   try {
     await postAvailablePlacesData(placeData.value);
-    router.push("/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/");
+    router.push(additionalServicesRoute.path);
   } catch (error) {
-    errorMessage.value = error.response.data[""][0];
+    handleApiError(error, null, errorMessage)
   } finally {
     isSubmitting.value = false;
   }
@@ -152,6 +167,8 @@ const getPlaces = async () => {
     places.value = response.data.places;
   } catch (error) {
     console.error("Error:", error);
+  } finally {
+    preloader.value = false
   }
 };
 
@@ -168,9 +185,11 @@ const populateSelect = (numberOfSpaces) => {
   return options;
 };
 
-onMounted(() => {
+onMounted(async () => {
+  preloader.value = true
   getPageContent();
   getPlaces();
+  await routeStore.initializeRoutes();
 });
 </script>
 

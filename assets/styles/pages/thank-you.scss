@@ -8,6 +8,11 @@
 @import 'bootstrap/scss/tooltip';
 
 .thank-you {
+
+    &--not-fixed-price {
+        text-decoration: line-through;
+    }
+
     &__main-content {
         padding: 20px 0 35px;
     }

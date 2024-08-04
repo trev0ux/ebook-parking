@@ -1,6 +1,10 @@
 <template>
   <section class="thank-you">
-    <Banner :title="content.name"></Banner>
+    <div class="preloader" v-if="preloader">
+      <div class="preloader__image"></div>
+    </div>
+  <div v-else>
+    <Banner :title="content.name" hide-breadcrumb></Banner>
     <article class="thank-you__payment-summary">
       <div class="container">
         <div class="thank-you__thanks" v-if="content.properties">
@@ -62,7 +66,8 @@
           </template>
           </custom-accordion>
         </div>
-        <div class="accordion thank-you__accordion" id="finalAcordion">
+        <div class="accordion thank-you__accordion" id="finalAcordion" 
+         v-if="reservation.services && reservation.services.length > 0">
           <custom-accordion
             title="Services"
             item-id="collapse2"
@@ -80,12 +85,12 @@
             <article v-for="(item, index) in reservation.services" :key="index">
               <div>
                 <p>
-                <b>{{ item.name }}</b>   
+                <b :class="(!item.fixedPrice ? 'thank-you--not-fixed-price' : '')">{{ item.name }}</b>   
                   <p v-html="item.customerInfo"></p>
                 </p>
-                <p>€ {{ item.price.toFixed(2) }}</p>
+                <p :class="(!item.fixedPrice ? 'thank-you--not-fixed-price' : '')">€ {{ item.price.toFixed(2) }}</p>
                 <p>{{ item.selectedNumberOfSpaces }}</p>
-                <p>€ {{ item.totalPrice.toFixed(2) }}</p>
+                <p :class="(!item.fixedPrice ? 'thank-you--not-fixed-price' : '')">€ {{ item.totalPrice.toFixed(2) }}</p>
                 <p class="d-flex justify-content-end align-items-start">
                   <button
                     type="button"
@@ -99,7 +104,7 @@
                     type="button"
                     class="btn p-0"
                     v-else
-                    v-bs-tooltip:right="'Deze dienst heeft geen vaste prijs. De prijs wordt berekend en in rekening gebracht bij het afrekenen.'"
+                    v-bs-tooltip:right="'Deze dienst heeft een vaste prijs, deze is al inbegrepen in onderstaand totaalbedrag.'"
                   >
                     <Icon name="TooltipIcon"></Icon>
                   </button>
@@ -129,6 +134,7 @@
         </div>
       </div>
     </article>
+  </div>
   </section>
 </template>
 
@@ -137,16 +143,18 @@
 </style>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted } from "vue";
 import Banner from "~/components/banner.vue";
 import { Icon } from "#components";
 import CustomAccordion from "../components/custom-accordion.vue";
+import { handleApiError } from '@/utils/errorUtils'
 
 import {
   getReservationConfirmedData,
   getReservationConfirmedPage,
 } from "@/services/api.ts";
 
+const preloader = ref(false);
 const content = ref([]);
 const reservation = ref([
   {
@@ -167,9 +175,10 @@ const getData = async () => {
   try {
     const response = await getReservationConfirmedData();
     reservation.value = response;
-    console.log(response);
   } catch (error) {
-    console.error("Error:", error);
+    handleApiError(error, null, errorMessage)
+  } finally {
+    preloader.value = false
   }
 };
 
@@ -178,11 +187,12 @@ const getPageContent = async () => {
     const response = await getReservationConfirmedPage();
     content.value = response;
   } catch (error) {
-    console.error("Error:", error);
+    handleApiError(error, null, errorMessage)
   }
 };
 
 onMounted(() => {
+  preloader.value = true;
   getData();
   getPageContent();
 });

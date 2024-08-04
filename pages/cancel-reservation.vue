@@ -1,6 +1,10 @@
 <template>
   <section class="cancelation-page">
-    <Banner :title="content.name"></Banner>
+    <div class="preloader" v-if="preloader">
+      <div class="preloader__image"></div>
+    </div>
+    <div v-else>
+    <Banner :title="content.name" hide-breadcrumb></Banner>
     <p class="invalid-feedback text-center d-flex py-5 justify-content-center" v-if="error">
     <div class="container" v-if="!errorMessage">{{ error }}</div>
     <div class="container" v-else v-html="errorMessage">
@@ -77,6 +81,7 @@
         </section>
       </div>
     </div>
+  </div>
   </section>
 </template>
 
@@ -96,7 +101,8 @@ const errorMessage = ref("");
 const isSubmitting = ref(false);
 const postData = ref({});
 const validationErrors = ref([]);
-const content = ref([])
+const content = ref([]);
+const preloader = ref(false);
 
 const hasFieldError = (fieldName) => {
   return validationErrors.value && validationErrors.value[fieldName];
@@ -161,9 +167,8 @@ const getPageContent = async () => {
   try {
     const response = await getCancelationPage();
     content.value = response;
-    console.log(content.value);
   } catch (error) {
-    console.error("Error:", error);
+    handleApiError(error, null, errorMessage)
   }
 };
 
@@ -176,16 +181,14 @@ const getData = async () => {
     data.value = response.data;
     postData.value = populatePostData(token)
   } catch (err) {
-    if (err.response.status === 404) {
-        error.value = true;
-        errorMessage.value = content.value.properties.message404.markup;
-      } else {
-        error.value = err.response.data.errors.token || "An error occurred during cancellation.";
-      }
+    handleApiError(error, null, errorMessage)
+  } finally {
+    preloader.value = false;
   }
 }
 
 onMounted(async () => {
+  preloader.value = true;
   getData();
   getPageContent();
 });

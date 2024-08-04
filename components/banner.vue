@@ -3,7 +3,7 @@
     <div class="container">
       <div class="banner__details">
         <h3>{{ title }}</h3>
-        <Breadcrumb />
+        <Breadcrumb v-if="!hideBreadcrumb"/>
       </div>
     </div>
   </div>
@@ -22,6 +22,10 @@ export default {
       type: String,
       required: true,
     },
+    hideBreadcrumb: {
+      type: Boolean,
+      required: false
+    }
   },
 };
 </script>

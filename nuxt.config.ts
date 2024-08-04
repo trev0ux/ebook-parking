@@ -1,30 +1,5 @@
 
-import axios from 'axios'
-
-const fetchRoutes = async () => {
-
-  try {
-    const response = await axios.get(process.env.NUXT_PUBLIC_API_URL + '/umbraco/delivery/api/v2/content?fetch=descendants%3A%2F&skip=0&take=10&fields=properties%5Burl%5D');
-    return response.data.items.map((item: any) => ({
-      name: item.name,
-      path: item.route.path,
-      contentType: item.contentType
-    }));
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
-}
-
-const staticRouteFiles: Record<string, string> = {
-  'reservationPage': '~/pages/index.vue',
-  'availablePlaces': '~/pages/available-places.vue',
-  'additionalServices': '~/pages/additional-services.vue',
-  'reservationComplete': '~/pages/thank-you.vue',
-  'bookingFormPage': '~/pages/reservation-form.vue',
-  'cancelReservation': '~/pages/cancel-reservation.vue',
-  'canceledReservation': '~/pages/confirmed-cancelation.vue'
-};
+import { fetchRoutes, staticRoutes } from './utils/fetchRoutes'
 
 
 export default defineNuxtConfig({
@@ -57,7 +32,7 @@ export default defineNuxtConfig({
       pages.splice(0, pages.length);
 
       cmsRoutes.forEach((route: any, index: number) => {
-        const file = staticRouteFiles[route.contentType];
+        const file = staticRoutes[route.contentType];
         const routeConfig: any = {
           name: route.name,
           path: route.path,
@@ -68,7 +43,7 @@ export default defineNuxtConfig({
           const rootRoute = {
             name: "home",
             path: '/',
-            file: staticRouteFiles[0],
+            file: staticRoutes[0],
             redirect: route.path
           };
 
@@ -103,6 +78,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/icon',
     '@nuxt/image',
+    '@pinia/nuxt',
   ],
 
   plugins: [

@@ -1,269 +1,303 @@
 <template>
   <section class="reservation-form">
-    <Banner :title="content.name"></Banner>
-    <article class="reservation-form__main-content">
-      <div class="container">
-        <form @submit.prevent="submitReservation">
-          <section class="reservation-form__form">
-            <aside>
-              <div class="reservation-form__card">
-                <div class="reservation-form__summary-header">
-                  <h4>Boekingsdetails</h4>
-                  <div>
-                    <p>Aankomstdatum:</p>
-                    <p>{{ formatDate(reservation.arrivelDate) }}</p>
-                  </div>
-                  <div>
-                    <p>Vertrekdatum:</p>
-                    <p>{{ formatDate(reservation.departureDate) }}</p>
-                  </div>
-                </div>
-                <section class="reservation-form__summary-details">
-                  <header>
-                    <h5>Diensten</h5>
-                    <h5>Evalueer</h5>
-                    <h5>Aantal stuks</h5>
-                    <h5>Totaal</h5>
-                  </header>
-                  <article
-                    v-for="(item, index) in reservation.invoiceDetails"
-                    :key="index"
-                  >
+    <div class="preloader" v-if="preloader">
+      <div class="preloader__image"></div>
+    </div>
+    <div v-else>
+      <Banner :title="content.name"></Banner>
+      <article class="reservation-form__main-content">
+        <div class="container">
+          <form @submit.prevent="submitReservation">
+            <section class="reservation-form__form">
+              <aside>
+                <div class="reservation-form__card">
+                  <div class="reservation-form__summary-header">
+                    <h4>Boekingsgegevens</h4>
                     <div>
-                      <h5>{{ item.name }}</h5>
-                      <p>€ {{ item.price.toFixed(2) }}</p>
-                      <p>{{ item.quantity }}</p>
-                      <p>€ {{ item.total.toFixed(2) }}</p>
+                      <p>Aankomstdatum:</p>
+                      <p>{{ formatDate(reservation.arrivelDate) }}</p>
                     </div>
-                  </article>
-                  <div v-if="reservation.totalCostInlcudingVAT">
-                    <h5>Total Cost Including VAT:</h5>
-                    <h6>€ {{ reservation.totalCostInlcudingVAT.toFixed(2) }}</h6>
+                    <div>
+                      <p>Vertrekdatum:</p>
+                      <p>{{ formatDate(reservation.departureDate) }}</p>
+                    </div>
                   </div>
-                </section>
-              </div>
-              <div class="reservation-form__card">
-                <h4>Boekingsdetails</h4>
-                <p>
-                  Voordat we de reservering kunnen bevestigen, hebben we onderstaande
-                  gegevens nodig, klik vervolgens op reservering bevestigen.
-                </p>
-                <div class="reservation-form__double-select">
-                  <p>Veerboot vertrektijd<span class="required">*</span></p>
-
-                  <div>
-                    <custom-select
-                      aria-label="Hour"
-                      id="name"
-                      v-bind="$attrs"
-                      v-model="reservation.ferryDepartureHour"
-                      :options="populateSelect(reservation.ferryHours)"
-                      @change="updateField('FerryDepartureHour', $event.target.value)"
-                      required
-                    />
-                    <custom-select
-                      aria-label="Min"
-                      id="name"
-                      v-bind="$attrs"
-                      v-model="reservation.ferryDepartureMinutes"
-                      :options="populateSelect(reservation.ferryMinutes)"
-                      required
-                    />
-                    <div
-                      v-if="hasFieldError('FerryDepartureHour')"
-                      class="invalid-feedback d-block"
+                  <section class="reservation-form__summary-details">
+                    <header>
+                      <h5>Diensten</h5>
+                      <h5>Evalueer</h5>
+                      <h5>Aantal stuks</h5>
+                      <h5>Totaal</h5>
+                    </header>
+                    <article
+                      v-for="(item, index) in reservation.invoiceDetails"
+                      :key="index"
                     >
-                      {{ getFieldError("FerryDepartureHour") }}
+                      <div>
+                        <h5
+                          :class="
+                            !item.fixedPrice ? 'reservation-form--not-fixed-price' : ''
+                          "
+                        >
+                          {{ item.name }}
+                        </h5>
+                        <p
+                          :class="
+                            !item.fixedPrice ? 'reservation-form--not-fixed-price' : ''
+                          "
+                        >
+                          € {{ item.price.toFixed(2) }}
+                          <button
+                            type="button"
+                            class="btn p-0"
+                            v-if="!item.fixedPrice"
+                            v-bs-tooltip:right="
+                              'Deze dienst heeft geen vaste prijs. De prijs wordt berekend en in rekening gebracht bij het afrekenen.'
+                            "
+                          >
+                            <Icon name="TooltipIcon"></Icon>
+                          </button>
+                        </p>
+                        <p>{{ item.quantity }}</p>
+                        <p
+                          :class="
+                            item.fixedPrice ? 'reservation-form--not-fixed-price' : ''
+                          "
+                        >
+                          € {{ item.total.toFixed(2) }}
+                        </p>
+                      </div>
+                    </article>
+                    <div v-if="reservation.totalCostInlcudingVAT">
+                      <h5>Totale kosten inclusief BTW:</h5>
+                      <h6>€ {{ reservation.totalCostInlcudingVAT.toFixed(2) }}</h6>
                     </div>
-                  </div>
+                  </section>
                 </div>
-                <div class="reservation-form__switch">
-                  <p>Betreft sneldienst?</p>
-                  <div>
-                    <custom-switch
-                      id="name"
-                      v-model="reservation.isFastFerry"
-                      @valueChanged="handleFastFerry"
-                    />
-                    <span>{{ isFastFerry }}</span>
-                  </div>
-                </div>
-                <div class="reservation-form__double-select">
-                  <p>Veerboot vertrektijd<span class="required">*</span></p>
-                  <div>
-                    <custom-select
-                      aria-label="Hours"
-                      id="name"
-                      v-bind="$attrs"
-                      @change="updateField('FerryReturnHour', $event.target.value)"
-                      v-model="reservation.ferryReturnHour"
-                      :options="populateSelect(reservation.ferryHours)"
-                    />
-                    <custom-select
-                      aria-label="Minutes"
-                      id="name"
-                      v-bind="$attrs"
-                      v-model="reservation.ferryReturnMinutes"
-                      :options="populateSelect(reservation.ferryMinutes)"
-                    />
-                    <div
-                      v-if="hasFieldError('FerryReturnHour')"
-                      class="invalid-feedback d-block"
-                    >
-                      {{ getFieldError("FerryReturnHour") }}
-                    </div>
-                  </div>
-                </div>
-                <div class="reservation-form__single-select">
-                  <p>Veerboot vertrektijd<span class="required">*</span></p>
-                  <div>
-                    <custom-select
-                      aria-label="Payment Option"
-                      id="name"
-                      v-bind="$attrs"
-                      @change="updateField('FerryReturn', $event.target.value)"
-                      v-model="reservation.ferryReturn"
-                      :options="populateSelect(reservation.ferries)"
-                    />
-                    <div
-                      v-if="hasFieldError('FerryReturn')"
-                      class="invalid-feedback d-block"
-                    >
-                      {{ getFieldError("FerryReturn") }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </aside>
-            <article>
-              <div class="reservation-form__card">
-                <div class="reservation-form__content-fields">
-                  <h4 v-if="content.properties">
-                    {{ content.properties.titleFerryForm }}
-                  </h4>
-                  <p v-if="content.properties">
-                    {{ content.properties.descriptionFerryForm }}
+                <div class="reservation-form__card">
+                  <h4>Routegegevens</h4>
+                  <p>
+                    Voordat we de reservering kunnen bevestigen, hebben we onderstaande
+                    gegevens nodig, klik vervolgens op reservering bevestigen.
                   </p>
-                  <fieldset>
-                    <custom-input
-                      label="MemberName"
-                      @input="updateField('MemberName', $event.target.value)"
-                      :error-message="getFieldError('MemberName')"
-                      id="MemberName"
-                      required
-                      v-model="reservation.memberName"
-                    ></custom-input>
-                    <custom-input
-                      label="LicensePlate"
-                      id="LicensePlate"
-                      v-model="reservation.licensePlate"
-                    ></custom-input>
-                    <custom-input
-                      label="Telefoon"
-                      id="Telefoon"
-                      v-bind="$attrs"
-                      type="tel"
-                      @input="updateField('PhoneNumber', $event.target.value)"
-                      v-model="reservation.phoneNumber"
-                      required
-                      :error-message="getFieldError('PhoneNumber')"
-                    ></custom-input>
-                    <custom-input
-                      label="Email"
-                      id="Email"
-                      @input="updateField('Email', $event.target.value)"
-                      required
-                      v-model="reservation.email"
-                      :error-message="getFieldError('Email')"
-                    ></custom-input>
+                  <div class="reservation-form__double-select">
+                    <p>Veerboot vertrektijd<span class="required">*</span></p>
+
                     <div>
-                      <label class="form-label" for="bericht">Bericht</label>
-                      <small>
-                        Aanvullende gegevens, tips en/of vragen mag u hier
-                        invullen.</small
+                      <custom-select
+                        aria-label="Hour"
+                        id="name"
+                        v-bind="$attrs"
+                        v-model="reservation.ferryDepartureHour"
+                        :options="populateSelect(reservation.ferryHours)"
+                        @change="updateField('FerryDepartureHour', $event.target.value)"
+                        required
+                      />
+                      <custom-select
+                        aria-label="Min"
+                        id="name"
+                        v-bind="$attrs"
+                        v-model="reservation.ferryDepartureMinutes"
+                        :options="populateSelect(reservation.ferryMinutes)"
+                        required
+                      />
+                      <div
+                        v-if="hasFieldError('FerryDepartureHour')"
+                        class="invalid-feedback d-block"
                       >
-                      <textarea
-                        rows="4"
-                        cols="20"
-                        id="bericht"
-                        class="form-control"
-                        v-model="reservation.message"
-                      ></textarea>
+                        {{ getFieldError("FerryDepartureHour") }}
+                      </div>
                     </div>
-                    <custom-select
-                      label="Payment Option"
-                      id="name"
-                      v-bind="$attrs"
-                      v-model="paymentOptionString"
-                      :options="populateSelect(reservation.paymentOptionsList)"
-                    />
-                  </fieldset>
+                  </div>
+                  <div class="reservation-form__switch">
+                    <p>Betreft sneldienst?</p>
+                    <div>
+                      <custom-switch
+                        id="name"
+                        v-model="reservation.isFastFerry"
+                        @valueChanged="handleFastFerry"
+                      />
+                      <span>{{ isFastFerry }}</span>
+                    </div>
+                  </div>
+                  <div class="reservation-form__double-select">
+                    <p>Veerboot vertrektijd<span class="required">*</span></p>
+                    <div>
+                      <custom-select
+                        aria-label="Hours"
+                        id="name"
+                        v-bind="$attrs"
+                        @change="updateField('FerryReturnHour', $event.target.value)"
+                        v-model="reservation.ferryReturnHour"
+                        :options="populateSelect(reservation.ferryHours)"
+                      />
+                      <custom-select
+                        aria-label="Minutes"
+                        id="name"
+                        v-bind="$attrs"
+                        v-model="reservation.ferryReturnMinutes"
+                        :options="populateSelect(reservation.ferryMinutes)"
+                      />
+                      <div
+                        v-if="hasFieldError('FerryReturnHour')"
+                        class="invalid-feedback d-block"
+                      >
+                        {{ getFieldError("FerryReturnHour") }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="reservation-form__single-select">
+                    <p>Veerboot vertrektijd<span class="required">*</span></p>
+                    <div>
+                      <custom-select
+                        aria-label="Payment Option"
+                        id="name"
+                        v-bind="$attrs"
+                        @change="updateField('FerryReturn', $event.target.value)"
+                        v-model="reservation.ferryReturn"
+                        :options="populateSelect(reservation.ferries)"
+                      />
+                      <div
+                        v-if="hasFieldError('FerryReturn')"
+                        class="invalid-feedback d-block"
+                      >
+                        {{ getFieldError("FerryReturn") }}
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              </aside>
+              <article>
+                <div class="reservation-form__card">
+                  <div class="reservation-form__content-fields">
+                    <h4 v-if="content.properties">
+                      {{ content.properties.titleFerryForm }}
+                    </h4>
+                    <p v-if="content.properties">
+                      {{ content.properties.descriptionFerryForm }}
+                    </p>
+                    <fieldset>
+                      <custom-input
+                        label="Lidnaam"
+                        @input="updateField('MemberName', $event.target.value)"
+                        :error-message="getFieldError('MemberName')"
+                        id="MemberName"
+                        required
+                        v-model="reservation.memberName"
+                      ></custom-input>
+                      <custom-input
+                        label="Nummerplaat"
+                        id="LicensePlate"
+                        v-model="reservation.licensePlate"
+                      ></custom-input>
+                      <custom-input
+                        label="Telefoon"
+                        id="Telefoon"
+                        v-bind="$attrs"
+                        type="tel"
+                        @input="updateField('PhoneNumber', $event.target.value)"
+                        v-model="reservation.phoneNumber"
+                        required
+                        :error-message="getFieldError('PhoneNumber')"
+                      ></custom-input>
+                      <custom-input
+                        label="E-mail"
+                        id="Email"
+                        @input="updateField('Email', $event.target.value)"
+                        required
+                        v-model="reservation.email"
+                        :error-message="getFieldError('Email')"
+                      ></custom-input>
+                      <div>
+                        <label class="form-label" for="bericht">Bericht</label>
+                        <small>
+                          Aanvullende gegevens, tips en/of vragen mag u hier
+                          invullen.</small
+                        >
+                        <textarea
+                          rows="4"
+                          cols="20"
+                          id="bericht"
+                          class="form-control"
+                          v-model="reservation.message"
+                        ></textarea>
+                      </div>
+                      <custom-select
+                        label="Betalingsmogelijkheid"
+                        id="name"
+                        v-bind="$attrs"
+                        v-model="paymentOptionString"
+                        :options="populateSelect(reservation.paymentOptionsList)"
+                      />
+                    </fieldset>
+                  </div>
+                </div>
+              </article>
+            </section>
+            <div class="reservation-form__terms-and-conditions">
+              <p>
+                Uw reservering wordt direct in het systeem geplaatst, tevens ontvangt u
+                direct een reserveringsbevestiging op het door u ingevoerde e-mailadres!
+              </p>
+              <button @click="showModal = true" class="btn btn-link">Voorwaarden</button>
+              <custom-checkbox
+                v-if="showTermsAndConditions"
+                v-model="reservation.termsAndConditions"
+                label="Ik accepteer de algemene voorwaarden"
+                v-bind="$attrs"
+                id="terms-and-conditions"
+              ></custom-checkbox>
+              <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">
+                {{ errorMessage }}
               </div>
-            </article>
-          </section>
-          <div class="reservation-form__terms-and-conditions">
-            <p>
-              Uw reservering wordt direct in het systeem geplaatst, tevens ontvangt u
-              direct een reserveringsbevestiging op het door u ingevoerde e-mailadres!
-            </p>
-            <button @click="showModal = true" class="btn btn-link">Voorwaarden</button>
-            <custom-checkbox
-              v-if="showTermsAndConditions"
-              v-model="reservation.termsAndConditions"
-              label="I Accept the Terms and Conditions"
-              v-bind="$attrs"
-              id="terms-and-conditions"
-            ></custom-checkbox>
-            <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">
-              {{ errorMessage }}
             </div>
-          </div>
-          <custom-modal
-            v-if="showModal"
-            @close="showModal = false"
-            :title="content.properties.modelTitle"
-          >
-            <template #body>
-              <div v-html="content.properties.modelText.markup"></div>
-            </template>
-            <template #footer>
-              <button type="submit" class="btn btn-primary">IK GA AKKOORD</button>
-            </template>
-          </custom-modal>
-          <div class="reservation-form__buttons">
-            <NuxtLink
-              class="btn btn-outline-secondary"
-              to="/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/"
-              >Vorige</NuxtLink
+            <custom-modal
+              v-if="showModal"
+              @close="showModal = false"
+              :title="content.properties.modelTitle"
             >
-            <div>
-              <ul class="progress-steps">
-                <li class="progress-steps--previous"></li>
-                <li class="progress-steps--previous"></li>
-                <li class="progress-steps--previous"></li>
-                <li class="progress-steps--active"></li>
-                <li></li>
-              </ul>
+              <template #body>
+                <div v-html="content.properties.modelText.markup"></div>
+              </template>
+              <template #footer>
+                <button type="submit" class="btn btn-primary">IK GA AKKOORD</button>
+              </template>
+            </custom-modal>
+            <div class="reservation-form__buttons">
+              <NuxtLink
+                v-if="backRoute"
+                class="btn btn-outline-secondary"
+                :to="backRoute[0]"
+                >Vorige</NuxtLink
+              >
+              <div>
+                <ul class="progress-steps">
+                  <li class="progress-steps--previous"></li>
+                  <li class="progress-steps--previous"></li>
+                  <li class="progress-steps--previous"></li>
+                  <li class="progress-steps--active"></li>
+                  <li></li>
+                </ul>
+              </div>
+              <button
+                class="btn btn-secondary"
+                type="button"
+                @click="showModal = true"
+                :disabled="isSubmitting"
+              >
+                Bevestig
+                <span
+                  v-if="isSubmitting"
+                  class="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+              </button>
             </div>
-            <button
-              class="btn btn-secondary"
-              type="button"
-              @click="showModal = true"
-              :disabled="isSubmitting"
-            >
-              Bevestig
-              <span
-                v-if="isSubmitting"
-                class="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-            </button>
-          </div>
-        </form>
-      </div>
-    </article>
+          </form>
+        </div>
+      </article>
+    </div>
   </section>
 </template>
 
@@ -276,6 +310,8 @@ import CustomCheckbox from "../components/forms/custom-check.vue";
 import { format } from "date-fns";
 import { useRouter } from "vue-router";
 import Banner from "../components/banner.vue";
+import { useRouteStore } from "@/stores/routeStore";
+import { handleApiError } from "@/utils/errorUtils";
 
 import {
   getReservationPage,
@@ -293,6 +329,14 @@ const isFastFerry = ref("No");
 const validationErrors = ref([]);
 const router = useRouter();
 const isSubmitting = ref(false);
+const routeStore = useRouteStore();
+const contentTypeRoutes = computed(() =>
+  routeStore.getRoutesByContentType("reservationComplete")
+);
+
+const preloader = ref(false);
+
+const backRoute = computed(() => routeStore.getRoutesByContentType("additionalServices"));
 
 const paymentOptionString = computed(() => {
   return reservation.value.paymentOption != null
@@ -420,9 +464,10 @@ const getData = async () => {
     if (reservation.value.memberId == null) {
       reservation.value.memberName = "";
     }
-
   } catch (error) {
-    console.error("Error:", error);
+    handleApiError(error, null, errorMessage);
+  } finally {
+    preloader.value = false;
   }
 };
 
@@ -432,7 +477,7 @@ const getPageContent = async () => {
     content.value = response;
     console.log(content.value);
   } catch (error) {
-    console.error("Error:", error);
+    handleApiError(error, errorMessage);
   }
 };
 
@@ -441,35 +486,23 @@ const submitReservation = async () => {
   showTermsAndConditions.value = true;
   showModal.value = false;
   isSubmitting.value = true;
+  const reservationCompleteRoute = contentTypeRoutes.value[0];
 
   try {
     await postReservationFormData(postData.value);
-    router.push(
-      "/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/uw-gegevens/uw-reservering-is-bevestigd/"
-    );
+    router.push(reservationCompleteRoute.path);
   } catch (error) {
-    if (error.response) {
-      if (error.response.status === 400) {
-        validationErrors.value = error.response.data.errors;
-      } else {
-        if (error.title) {
-          errorMessage.value = error.title;
-        } else {
-          errorMessage.value = error.response.data[""][0];
-        }
-        console.error("An error occurred:", error);
-      }
-    } else {
-      console.error("An error occurred:", error);
-    }
+    handleApiError(error, validationErrors, errorMessage);
   } finally {
     isSubmitting.value = false;
   }
 };
 
 onMounted(() => {
+  preloader.value = true;
   getPageContent();
   getData();
+  routeStore.initializeRoutes();
 });
 </script>
 
