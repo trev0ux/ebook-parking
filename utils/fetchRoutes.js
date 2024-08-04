@@ -1,11 +1,10 @@
 import axios from 'axios'
 
 
-export const fetchRoutes = async () => {
-  const config = useRuntimeConfig()
+export const fetchRoutes = async (path) => {
 
   try {
-    const response = await axios.get(`${config.public.apiBaseUrl}/umbraco/delivery/api/v2/content?fetch=descendants%3A%2F&skip=0&take=10&fields=properties%5Burl%5D`, {
+    const response = await axios.get(`${path}/umbraco/delivery/api/v2/content?fetch=descendants%3A%2F&skip=0&take=10&fields=properties%5Burl%5D`, {
       headers: {
         'Accept': '*/*',
         'Content-Type': 'application/json'

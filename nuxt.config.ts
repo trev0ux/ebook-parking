@@ -27,7 +27,7 @@ export default defineNuxtConfig({
   },
   hooks: {
     'pages:extend': async (pages) => {
-      const cmsRoutes = await fetchRoutes();
+      const cmsRoutes = await fetchRoutes(process.env.NUXT_PUBLIC_API_URL);
 
       pages.splice(0, pages.length);
 

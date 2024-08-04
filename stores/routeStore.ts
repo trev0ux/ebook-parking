@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { fetchRoutes, staticRoutes } from '../utils/fetchRoutes'
+import { useRuntimeConfig } from '#app'
 
 interface Route {
   name: string
@@ -15,7 +16,8 @@ export const useRouteStore = defineStore('route', {
 
   actions: {
     async initializeRoutes() {
-      this.routes = await fetchRoutes()
+      const config = useRuntimeConfig()
+      this.routes = await fetchRoutes(config.public.apiBaseUrl)
     },
 
     getRoutesByContentType(contentType: string): Route[] {

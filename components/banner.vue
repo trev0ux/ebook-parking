@@ -2,7 +2,7 @@
   <div class="banner">
     <div class="container">
       <div class="banner__details">
-        <h3>{{ title }}</h3>
+        <h3 v-if="title">{{ title }}</h3>
         <Breadcrumb v-if="!hideBreadcrumb"/>
       </div>
     </div>
