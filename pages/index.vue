@@ -72,12 +72,12 @@ import { getReservePage, getReservationData, postReserveData } from "@/services/
 import { useRouter } from "vue-router";
 import Banner from "../components/banner.vue";
 import { useRouteStore } from "@/stores/routeStore";
-import { handleApiError } from '@/utils/errorUtils'
+import { handleApiError } from '@/utils/errorUtils';
+import { formatDateRange, defaultFormat } from "@/utils/dateUtils";
 
 const router = useRouter();
 const dateRange = ref(new Date());
 const content = ref({});
-const defaultFormat = "dd-MM-yyyy";
 const errorMessage = ref("");
 const isSubmitting = ref(false);
 const date = ref([]);
@@ -102,15 +102,7 @@ const isDatePast = (dateString) => {
   return dateObj < now;
 };
 
-const formattedDateRange = computed(() => {
-  if (!dateRange.value || dateRange.value.length !== 2) {
-    const today = new Date();
-    return [format(today, defaultFormat), format(addDays(today, 1), defaultFormat)];
-  }
-  return dateRange.value.map((date) =>
-    date ? format(new Date(date), defaultFormat) : ""
-  );
-});
+const formattedDateRange = computed(() => formatDateRange(dateRange.value));
 
 const submitBooking = async () => {
   let bookingData = {

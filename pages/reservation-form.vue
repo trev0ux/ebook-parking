@@ -312,6 +312,7 @@ import { useRouter } from "vue-router";
 import Banner from "../components/banner.vue";
 import { useRouteStore } from "@/stores/routeStore";
 import { handleApiError } from "@/utils/errorUtils";
+import { formatDate } from "@/utils/dateUtils";
 
 import {
   getReservationPage,
@@ -446,15 +447,6 @@ const populateSelect = (arr) => {
   return options;
 };
 
-function formatDate(inputDate) {
-  const defaultFormat = "dd-MM-yyyy";
-
-  if (!inputDate) {
-    return format(new Date(), defaultFormat);
-  }
-
-  return format(new Date(inputDate), defaultFormat);
-}
 
 const getData = async () => {
   try {
