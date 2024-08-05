@@ -30,7 +30,14 @@
                 <div>{{ formattedDateRange[1] }}</div>
               </div>
             </div>
-            <VueDatePicker
+            <VDatePicker
+              v-model.range="dateRange"
+              :rows="2"
+              locale="nl"
+              :attributes="attributes"
+              :masks="{ input: defaultFormat }"
+            />
+            <!-- <VueDatePicker
               v-model="dateRange"
               range
               inline
@@ -41,10 +48,12 @@
               :preview-format="defaultFormat"
               :multi-calendars="{ count: 2 }"
               :start-date="startDate"
-              focus-start-date
               :week-start="1"
               auto-apply
-            />
+              :is-mobile="true"
+              teleport-to="body"
+              :z-index="9999"
+            /> -->
             <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">
               {{ errorMessage }}
             </div>
@@ -65,18 +74,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { addDays, format } from "date-fns";
 import CustomAccordion from "../components/custom-accordion.vue";
 import { getReservePage, getReservationData, postReserveData } from "@/services/api.ts";
 import { useRouter } from "vue-router";
 import Banner from "../components/banner.vue";
 import { useRouteStore } from "@/stores/routeStore";
-import { handleApiError } from '@/utils/errorUtils';
+import { handleApiError } from "@/utils/errorUtils";
 import { formatDateRange, defaultFormat } from "@/utils/dateUtils";
 
 const router = useRouter();
-const dateRange = ref(new Date());
+const dateRange = ref({});
 const content = ref({});
 const errorMessage = ref("");
 const isSubmitting = ref(false);
@@ -84,17 +93,36 @@ const date = ref([]);
 const routeStore = useRouteStore();
 const preloader = ref(false);
 
+const attributes = computed(() => [
+  {
+    key: "start",
+    highlight: true,
+    dates: new Date(),
+  },
+  {
+    key: "start-date",
+    highlight: {
+      fillMode: "solid",
+      contentClass: "start-date",
+    },
+    dates: dateRange.value.start,
+  },
+  {
+    key: "end-date",
+    highlight: {
+      fillMode: "solid",
+      contentClass: "end-date",
+    },
+    dates: dateRange.value.end,
+  },
+]);
+
 const contentTypeRoutes = computed(() =>
   routeStore.getRoutesByContentType("availablePlaces")
 );
 
-const startDate = computed(() => {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), 1);
-});
-
-const isArrivalPast = computed(() => isDatePast(dateRange.value[0]));
-const isDeparturePast = computed(() => isDatePast(dateRange.value[1]));
+const isArrivalPast = computed(() => isDatePast(dateRange.value.start));
+const isDeparturePast = computed(() => isDatePast(dateRange.value.end));
 
 const isDatePast = (dateString) => {
   const now = new Date();
@@ -102,12 +130,14 @@ const isDatePast = (dateString) => {
   return dateObj < now;
 };
 
-const formattedDateRange = computed(() => formatDateRange(dateRange.value));
+const formattedDateRange = computed(() => {
+  return formatDateRange(dateRange.value);
+});
 
 const submitBooking = async () => {
   let bookingData = {
-    arriveDate: dateRange.value[0],
-    leaveDate: dateRange.value[1],
+    arriveDate: dateRange.value.start,
+    leaveDate: dateRange.value.end,
   };
   const availablePlacesRoute = contentTypeRoutes.value[0];
   isSubmitting.value = true;
@@ -117,7 +147,7 @@ const submitBooking = async () => {
     await postReserveData(bookingData);
     router.push(availablePlacesRoute.path);
   } catch (error) {
-    handleApiError(error, null, errorMessage)
+    handleApiError(error, null, errorMessage);
   } finally {
     isSubmitting.value = false;
   }
@@ -129,7 +159,7 @@ const getReserveContent = async () => {
     const response = await getReservePage();
     content.value = response;
   } catch (error) {
-    handleApiError(error, null, errorMessage)
+    handleApiError(error, null, errorMessage);
   } finally {
     preloader.value = false;
   }
@@ -148,18 +178,18 @@ const getReserveDate = async () => {
 
     const isEntireStayPast = computed(() => isArrivalPast.value && isDeparturePast.value);
     if (isEntireStayPast && date.value.arrivelDate && date.value.departureDate) {
-      dateRange.value = [date.value.arrivelDate, date.value.departureDate];
+      dateRange.value = {start: date.value.arrivelDate, end: date.value.departureDate};
       localStorage.setItem("dateRange", JSON.stringify(dateRange.value));
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 };
 
 const setInitialDateRange = () => {
   const today = new Date();
   const tomorrow = addDays(today, 1);
-  dateRange.value = [today, tomorrow];
+  dateRange.value = {start: today, end: tomorrow};
 };
 
 onMounted(async () => {

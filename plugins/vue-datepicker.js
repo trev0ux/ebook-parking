@@ -1,6 +1,8 @@
-import VueDatePicker from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css'
+import { Calendar, DatePicker } from 'v-calendar'
+import 'v-calendar/style.css';
+
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.component('VueDatePicker', VueDatePicker)
+  nuxtApp.vueApp.component('VCalendar', Calendar)
+  nuxtApp.vueApp.component('VDatePicker', DatePicker)
 })
