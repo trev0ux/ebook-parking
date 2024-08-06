@@ -36,21 +36,21 @@
                       <div>
                         <h5
                           :class="
-                            !item.fixedPrice ? 'reservation-form--not-fixed-price' : ''
+                            !item.fixedPrice && item.serviceId ? 'reservation-form--not-fixed-price' : ''
                           "
                         >
                           {{ item.name }}
                         </h5>
                         <p
                           :class="
-                            !item.fixedPrice ? 'reservation-form--not-fixed-price' : ''
+                          !item.fixedPrice && item.serviceId ? 'reservation-form--not-fixed-price' : ''
                           "
                         >
                           € {{ item.price.toFixed(2) }}
                           <button
                             type="button"
                             class="btn p-0"
-                            v-if="!item.fixedPrice"
+                            v-if="!item.fixedPrice && item.serviceId"
                             v-bs-tooltip:right="
                               'Deze dienst heeft geen vaste prijs. De prijs wordt berekend en in rekening gebracht bij het afrekenen.'
                             "
@@ -61,7 +61,7 @@
                         <p>{{ item.quantity }}</p>
                         <p
                           :class="
-                            item.fixedPrice ? 'reservation-form--not-fixed-price' : ''
+                          !item.fixedPrice && item.serviceId ? 'reservation-form--not-fixed-price' : ''
                           "
                         >
                           € {{ item.total.toFixed(2) }}

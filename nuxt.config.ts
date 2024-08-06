@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     head: {
       title: 'Parkeren-harlingen.nl | Parkeren op loopafstand van de boten',
       charset: 'utf-8',
-      viewport: 'width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no',
+      viewport: 'width=device-width, initial-scale=1.0, maximum-scale=1',
       meta: [
         { name: 'description', content: 'Onze parkeerfaciliteit bevindt zich op slechts 300m lopen vanaf de veerterminal naar Terschelling en Vlieland. Reserveren noodzakelijk: Reserveer Online!' },
         { name: 'keywords', content: 'parkeerfaciliteit,Terschelling,Vlieland' },
