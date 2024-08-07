@@ -1,0 +1,64 @@
+@import "../_base/typography";
+@import "../_base/variables";
+@import "bootstrap/scss/_functions";
+@import "bootstrap/scss/_variables";
+@import "bootstrap/scss/mixins/_breakpoints";
+
+
+.payment {
+    &__stripe-fields {
+        background-color: $white-edgar;
+        border-radius: 12px;
+        padding: 25px;
+        margin-top: 24px;
+
+        .Input {
+            border: 2px solid $mandrake;
+            border-radius: 10px;
+            height: 40px;
+            color: $mandrake;
+            padding-left: 4px;
+            background-color: transparent;
+        }
+    }
+
+    &__buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 36px;
+        flex-wrap: wrap;
+
+        @include media-breakpoint-down(md) {
+            align-items: flex-end;
+            margin-top: 0;
+            justify-content: space-between;
+        }
+
+        >div {
+            @include media-breakpoint-down(md) {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                order: -1;
+                margin: 32px 0;
+            }
+        }
+
+        button,
+        a {
+            display: flex;
+            align-items: center;
+
+            span {
+                margin-left: 10px;
+            }
+            
+            @include media-breakpoint-down(md) {
+                height: 52px;
+                padding: 15px 20px !important;
+                @include font-size($font-small);
+            }
+        }
+    }
+}

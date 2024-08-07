@@ -307,7 +307,6 @@ import CustomSelect from "../components/forms/custom-select.vue";
 import CustomSwitch from "../components/forms/custom-switch.vue";
 import CustomModal from "../components/custom-modal.vue";
 import CustomCheckbox from "../components/forms/custom-check.vue";
-import { format } from "date-fns";
 import { useRouter } from "vue-router";
 import Banner from "../components/banner.vue";
 import { useRouteStore } from "@/stores/routeStore";
@@ -319,7 +318,7 @@ import {
   postReservationFormData,
   getReservationData,
 } from "@/services/api.ts";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 
 const reservation = ref([]);
 const content = ref([]);
@@ -335,16 +334,23 @@ const contentTypeRoutes = computed(() =>
   routeStore.getRoutesByContentType("reservationComplete")
 );
 
+const contentPaymentRoutes = computed(() =>
+  routeStore.getRoutesByContentType("bookingPaymentPage")
+);
+const paymentOptionString = ref(null);
+
 const preloader = ref(false);
 
 const backRoute = computed(() => routeStore.getRoutesByContentType("additionalServices"));
 
-const paymentOptionString = computed(() => {
-  return reservation.value.paymentOption != null
-    ? reservation.value.paymentOption === 0
-      ? ""
-      : reservation.value.paymentOption.toString()
-    : "";
+watch(() => reservation.value.paymentOption, (newVal) => {
+  if (newVal != null) {
+    if (newVal === 0) {
+      paymentOptionString.value = null;
+    } else {
+      paymentOptionString.value = newVal.toString();
+    }
+  }
 });
 
 const postData = computed(() => {
@@ -467,7 +473,6 @@ const getPageContent = async () => {
   try {
     const response = await getReservationPage();
     content.value = response;
-    console.log(content.value);
   } catch (error) {
     handleApiError(error, errorMessage);
   }
@@ -479,10 +484,15 @@ const submitReservation = async () => {
   showModal.value = false;
   isSubmitting.value = true;
   const reservationCompleteRoute = contentTypeRoutes.value[0];
+  const paymentRoute = contentPaymentRoutes.value[0];
 
   try {
     await postReservationFormData(postData.value);
-    router.push(reservationCompleteRoute.path);
+    if(paymentOptionString.value == "2") {
+      router.push(paymentRoute.path);
+    } else {
+      router.push(reservationCompleteRoute.path);
+    }
   } catch (error) {
     handleApiError(error, validationErrors, errorMessage);
   } finally {

@@ -30,5 +30,6 @@ export const staticRoutes = {
   'reservationComplete': '~/pages/thank-you.vue',
   'bookingFormPage': '~/pages/reservation-form.vue',
   'cancelReservation': '~/pages/cancel-reservation.vue',
-  'canceledReservation': '~/pages/confirmed-cancelation.vue'
+  'canceledReservation': '~/pages/confirmed-cancelation.vue',
+  'bookingPaymentPage': '~/pages/payment.vue'
 };

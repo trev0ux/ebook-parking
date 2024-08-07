@@ -37,23 +37,6 @@
               :attributes="attributes"
               :masks="{ input: defaultFormat }"
             />
-            <!-- <VueDatePicker
-              v-model="dateRange"
-              range
-              inline
-              model-auto
-              locale="nl"
-              :enable-time-picker="false"
-              :format="defaultFormat"
-              :preview-format="defaultFormat"
-              :multi-calendars="{ count: 2 }"
-              :start-date="startDate"
-              :week-start="1"
-              auto-apply
-              :is-mobile="true"
-              teleport-to="body"
-              :z-index="9999"
-            /> -->
             <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">
               {{ errorMessage }}
             </div>

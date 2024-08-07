@@ -71,10 +71,10 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBaseUrl: process.env.NUXT_PUBLIC_API_URL
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_URL,
+      stripePublicKey: process.env.STRIPE_PUBLIC_KEY
     }
   },
-
   modules: [
     '@nuxt/icon',
     '@nuxt/image',
@@ -84,7 +84,8 @@ export default defineNuxtConfig({
   plugins: [
     '@/plugins/vue-datepicker',
     '@/plugins/axios',
-    '@/plugins/bootstrap.js'
+    '@/plugins/bootstrap.js',
+    '@/plugins/stripe.js'
   ],
 
   compatibilityDate: '2024-07-18',

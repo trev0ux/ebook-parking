@@ -63,3 +63,5 @@ export const postCancelationFormData = (data: any) => postPageData('/api/Cancell
 export const getCancelationPage = () => fetchPageData('/umbraco/delivery/api/v2/content/item/annuleer-reservering/');
 
 export const getCancelationConfirmedPage = () => fetchPageData('/umbraco/delivery/api/v2/content/item/annuleer-reservering/bedankt-en-hopelijk-tot-ziens/');
+
+export const getPaymentPage = () => fetchPageData('/umbraco/delivery/api/v2/content/item/reserveer-nu/beschikbare-plaatsen/aanvullende-diensten/uw-gegevens/payment/');

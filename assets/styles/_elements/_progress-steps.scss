@@ -21,7 +21,7 @@
         width: 100%;
         height: 1px;
         background-color: $mandrake;
-        z-index: -1;
+        z-index: 0;
     }
 
     li {
@@ -31,6 +31,7 @@
         background-color: $mandrake;
         display: flex;
         align-items: center;
+        z-index: 1;
     }
 
     &--previous {

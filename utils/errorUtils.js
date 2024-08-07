@@ -1,24 +1,43 @@
-// utils/errorUtils.js
-
 import { navigateTo } from '#app'
 
 export function handleApiError(error, validationErrors, errorMessage) {
-    if (error) {
-        if (error.response.status === 400 && validationErrors) {
-            Object.assign(validationErrors.value, error.response.data.errors);
-        } else if (error.response.status === 404) {
-            return navigateTo('/404')
-        } else {
-            if (error.title) {
-                errorMessage.value = error.title;
-            } else if (error.response.data && error.response.data[""] && error.response.data[""][0]) {
-                errorMessage.value = error.response.data[""][0];
-            } else {
-                errorMessage.value = "An unexpected error occurred.";
-            }
+    if (!error) {
+        errorMessage.value = "Netwerkfout of server is onbereikbaar. We hebben een onverwerkte fout gevonden. Probeer het opnieuw. Als het probleem zich blijft voordoen, neem dan contact op met onze helpdesk op +31 517 412 986.";
+        console.error("Er is een fout opgetreden:", errorMessage.value);
+        return navigateTo('/error');
+    }
+
+    const { response } = error;
+
+    if (response) {
+        const { status, data } = response;
+
+        switch (status) {
+            case 400:
+                if (validationErrors && data.errors) {
+                    Object.assign(validationErrors.value, data.errors);
+                } else {
+                    errorMessage.value = data.message || "Ongeldig verzoek.";
+                }
+                break;
+            case 403:
+                errorMessage.value = "Toegang verboden. U heeft geen toestemming om deze bron te bekijken.";
+                navigateTo('/error');
+                break;
+            case 404:
+                errorMessage.value = "Bron niet gevonden.";
+                navigateTo('/error');
+                break;
+            case 500:
+                errorMessage.value = "Interne serverfout. Probeer het later opnieuw.";
+                navigateTo('/error');
+                break;
+            default:
+                errorMessage.value = data.message || "Er is een onverwachte fout opgetreden. We hebben een onverwerkte fout gevonden. Probeer het opnieuw. Als het probleem zich blijft voordoen, neem dan contact op met onze helpdesk op +31 517 412 986.";
         }
     } else {
-        errorMessage.value = "Network error or server is unreachable.";
+        errorMessage.value = "Er is een onverwachte fout opgetreden. We hebben een onverwerkte fout gevonden. Probeer het opnieuw. Als het probleem zich blijft voordoen, neem dan contact op met onze helpdesk op +31 517 412 986.";
     }
-    console.error("An error occurred:", error);
+
+    console.error("Er is een fout opgetreden:", error);
 }
