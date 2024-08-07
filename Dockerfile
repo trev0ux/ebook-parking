@@ -24,6 +24,7 @@ ENV NODE_ENV production
 
 # Pass the environment variable to the runner stage
 ENV NUXT_PUBLIC_API_URL=$NUXT_PUBLIC_API_URL
+ENV STRIPE_PUBLIC_KEY=$STRIPE_PUBLIC_KEY
 
 COPY --from=build /src/.output /src/.output
 # Optional, only needed if you rely on unbundled dependencies
