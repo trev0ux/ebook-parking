@@ -33,11 +33,7 @@
                   <li></li>
                 </ul>
               </div>
-              <button
-                class="btn btn-secondary"
-                type="submit"
-                :disabled="isSubmitting"
-              >
+              <button class="btn btn-secondary" type="submit" :disabled="isSubmitting">
                 Pay
                 <span
                   v-if="isSubmitting"
@@ -48,6 +44,12 @@
               </button>
             </div>
           </form>
+        </div>
+        <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">
+          {{ errorMessage }}
+        </div>
+        <div class="valid-feedback text-center d-block mt-3" v-if="successMessage">
+          {{ successMessage }}
         </div>
       </div>
     </div>
@@ -68,6 +70,7 @@ const routeStore = useRouteStore();
 const content = ref({});
 const preloader = ref(false);
 const errorMessage = ref("");
+const successMessage = ref("");
 const stripe = ref(null);
 const elements = ref(null);
 const cardElement = ref(null);
@@ -122,6 +125,24 @@ const handleSubmit = async () => {
         return_url: returnUrl,
       },
     });
+
+    console.log(result)
+
+    switch (result.status) {
+      case "succeeded":
+        successMessage.value = "Betaling geslaagd!";
+        break;
+      case "processing":
+        successMessage.value = "Uw betaling wordt verwerkt.";
+        break;
+      case "requires_payment_method":
+        errorMessage.value = "Uw betaling was niet succesvol, probeer het opnieuw.";
+        break;
+      default:
+        errorMessage.value =
+          "Er is iets mis gegaan. Neem contact op met de ondersteuning.";
+        break;
+    }
   } catch (error) {
     handleApiError(error, null, errorMessage);
   } finally {
