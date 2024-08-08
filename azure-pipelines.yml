@@ -22,11 +22,11 @@ stages:
       vmImage: ubuntu-latest
     steps:
 
-  - script: |
-      echo "NODE_ENV: $(NODE_ENV)"
-      echo "NUXT_PUBLIC_API_URL: $(UmbracoUrl)"
-      echo "STRIPE_PUBLIC_KEY: $(STRIPE_PUBLIC_KEY)"
-      displayName: 'Print environment variables'
+    - script: |
+        echo "NODE_ENV: $(NODE_ENV)"
+        echo "NUXT_PUBLIC_API_URL: $(UmbracoUrl)"
+        echo "STRIPE_PUBLIC_KEY: $(STRIPE_PUBLIC_KEY)"
+        displayName: 'Print environment variables'
 
     - task: Docker@2
       displayName: Build Frontend
