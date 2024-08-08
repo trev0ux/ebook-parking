@@ -10,7 +10,7 @@ variables:
   image: 'ebookparking-nuxt-uat'
   container: $(image)
   NODE_ENV: 'development'
-  UmbracoUrl : 'http://autostallingdebazuin-umbraco-container'
+  UmbracoUrl : 'https://pms.double.pt'
 
 stages:
 - stage: Build
