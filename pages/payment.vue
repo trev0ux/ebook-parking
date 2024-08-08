@@ -64,7 +64,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { ref, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useNuxtApp } from "#app";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 const routeStore = useRouteStore();
 const content = ref({});
@@ -126,22 +126,14 @@ const handleSubmit = async () => {
       },
     });
 
-    console.log(result)
 
     switch (result.status) {
-      case "succeeded":
-        successMessage.value = "Betaling geslaagd!";
-        break;
-      case "processing":
-        successMessage.value = "Uw betaling wordt verwerkt.";
-        break;
       case "requires_payment_method":
-        errorMessage.value = "Uw betaling was niet succesvol, probeer het opnieuw.";
+        router.push({path: reservationCompleteRoute.path, query: { status: 'is-failed' }});
         break;
       default:
-        errorMessage.value =
-          "Er is iets mis gegaan. Neem contact op met de ondersteuning.";
-        break;
+      router.push({path: reservationCompleteRoute.path, query: { status: 'is-failed' }});
+      break;
     }
   } catch (error) {
     handleApiError(error, null, errorMessage);

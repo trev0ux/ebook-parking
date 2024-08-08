@@ -7,15 +7,25 @@
     <Banner :title="content.name" hide-breadcrumb></Banner>
     <article class="thank-you__payment-summary">
       <div class="container">
-        <div class="thank-you__thanks" v-if="content.properties">
+        <div class="invalid-feedback text-center d-block mt-3" v-if="errorMessage">
+                {{ errorMessage }}
+              </div>
+        <div class="thank-you__thanks" v-if="content.properties && paymentByCreditCard">
+          {{ content.properties.paymentCompleteTitle }}
+        </div>
+        <div class="thank-you__thanks" v-if="content.properties && !paymentByCreditCard">
           {{ content.properties.thankYouMessage }}
         </div>
         <div
           class="thank-you__warning"
-          v-if="content.properties"
+           v-if="content.properties && !paymentByCreditCard"
           v-html="content.properties.emailMessage.markup"
         ></div>
-        <h5 class="thank-you__payment-complete">Payment complete</h5>
+        <div
+          class="thank-you__warning"
+           v-if="content.properties && paymentByCreditCard"
+          v-html="content.properties.paymentCompleteDescription.markup"
+        ></div>
         <section class="thank-you__total-summary">
           <h4>Boeking Hervatten</h4>
           <div>
@@ -148,14 +158,20 @@ import Banner from "~/components/banner.vue";
 import { Icon } from "#components";
 import CustomAccordion from "../components/custom-accordion.vue";
 import { handleApiError } from '@/utils/errorUtils'
+import { useNuxtApp } from "#app";
+import { useRoute } from "vue-router";
 
 import {
   getReservationConfirmedData,
   getReservationConfirmedPage,
 } from "@/services/api.ts";
+const { $axios } = useNuxtApp();
 
 const preloader = ref(false);
 const content = ref([]);
+const route = useRoute();
+const errorMessage = ref("");
+const paymentByCreditCard = ref(false)
 const reservation = ref([
   {
     reservationItemId: 17981,
@@ -191,9 +207,52 @@ const getPageContent = async () => {
   }
 };
 
+const handleRequests = async () => {
+  localStorage.removeItem("dateRange");
+  const urlParams = new URLSearchParams(window.location.search);
+  const paymentIntent = urlParams.get('payment_intent');
+  const paymentIntentClientSecret = urlParams.get('payment_intent_client_secret');
+  if (paymentIntent && paymentIntentClientSecret) {
+    paymentByCreditCard.value = true;
+    const getData = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentIntent = urlParams.get('payment_intent');
+      const paymentIntentClientSecret = urlParams.get('payment_intent_client_secret');
+
+      try {
+        const response = await $axios.get(`/api/booking/Finish?payment_intent=${paymentIntent}&payment_intent_client_secret=${paymentIntentClientSecret}`);       
+         reservation.value = response.data;
+      } catch (error) {
+        handleApiError(error, null, errorMessage);
+      } finally {
+        preloader.value = false;
+      }
+    };
+    getData();
+  } else {
+    const getData = async () => {
+      try {
+    const response = await getReservationConfirmedData();
+    reservation.value = response;
+  } catch (error) {
+    handleApiError(error, null, errorMessage)
+  } finally {
+    preloader.value = false
+  }
+    };
+    getData();
+
+  }
+}
+
 onMounted(() => {
   preloader.value = true;
-  getData();
   getPageContent();
+  handleRequests();
+
+  if (route.query.status) {
+    errorMessage.value = 'Uw betaling is mislukt maar uw reservering is bevestigd, betaal bij het inchecken.'
+  }
+
 });
 </script>
