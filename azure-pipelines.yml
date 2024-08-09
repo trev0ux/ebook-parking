@@ -10,7 +10,7 @@ variables:
   image: 'ebookparking-nuxt-uat'
   container: $(image)
   NODE_ENV: 'development'
-  UmbracoUrl : 'http://e-xplica-umbraco'
+  UmbracoUrl : 'https://pms.double.pt'
 
 stages:
 - stage: Build
@@ -21,6 +21,11 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
+
+    - script: |
+        echo "NODE_ENV: $(NODE_ENV)"
+        echo "NUXT_PUBLIC_API_URL: $(UmbracoUrl)"
+        echo "STRIPE_PUBLIC_KEY: $(STRIPE_PUBLIC_KEY)"
 
     - task: Docker@2
       displayName: Build Frontend
