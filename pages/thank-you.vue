@@ -209,41 +209,37 @@ const getPageContent = async () => {
 
 const handleRequests = async () => {
   localStorage.removeItem("dateRange");
+
   const urlParams = new URLSearchParams(window.location.search);
   const paymentIntent = urlParams.get('payment_intent');
   const paymentIntentClientSecret = urlParams.get('payment_intent_client_secret');
+
   if (paymentIntent && paymentIntentClientSecret) {
     paymentByCreditCard.value = true;
-    const getData = async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const paymentIntent = urlParams.get('payment_intent');
-      const paymentIntentClientSecret = urlParams.get('payment_intent_client_secret');
-
-      try {
-        const response = await $axios.get(`/api/booking/Finish?payment_intent=${paymentIntent}&payment_intent_client_secret=${paymentIntentClientSecret}`);       
-         reservation.value = response.data;
-      } catch (error) {
-        handleApiError(error, null, errorMessage);
-      } finally {
-        preloader.value = false;
-      }
-    };
-    getData();
+    try {
+      const response = await $axios.get(`/api/booking/Finish`, {
+        params: {
+          payment_intent,
+          payment_intent_client_secret
+        }
+      });
+      reservation.value = response.data;
+    } catch (error) {
+      handleApiError(error, null, errorMessage);
+    } finally {
+      preloader.value = false;
+    }
   } else {
-    const getData = async () => {
-      try {
-    const response = await getReservationConfirmedData();
-    reservation.value = response;
-  } catch (error) {
-    handleApiError(error, null, errorMessage)
-  } finally {
-    preloader.value = false
+    try {
+      const response = await getReservationConfirmedData();
+      reservation.value = response;
+    } catch (error) {
+      handleApiError(error, null, errorMessage);
+    } finally {
+      preloader.value = false;
+    }
   }
-    };
-    getData();
-
-  }
-}
+};
 
 onMounted(() => {
   preloader.value = true;

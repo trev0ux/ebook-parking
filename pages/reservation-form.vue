@@ -346,7 +346,7 @@ const backRoute = computed(() => routeStore.getRoutesByContentType("additionalSe
 watch(() => reservation.value.paymentOption, (newVal) => {
   if (newVal != null) {
     if (newVal === 0) {
-      paymentOptionString.value = null;
+      paymentOptionString.value = "2";
     } else {
       paymentOptionString.value = newVal.toString();
     }
@@ -462,6 +462,8 @@ const getData = async () => {
     if (reservation.value.memberId == null) {
       reservation.value.memberName = "";
     }
+
+    reservation.value.paymentOptionsList.shift();
   } catch (error) {
     handleApiError(error, null, errorMessage);
   } finally {

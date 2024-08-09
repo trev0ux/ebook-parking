@@ -28,6 +28,9 @@ export function handleApiError(error, validationErrors, errorMessage) {
                 errorMessage.value = "Bron niet gevonden.";
                 navigateTo('/error');
                 break;
+            case 422:
+                errorMessage.value = data[""][0];
+                break;
             case 500:
                 errorMessage.value = "Interne serverfout. Probeer het later opnieuw.";
                 navigateTo('/error');
@@ -38,6 +41,7 @@ export function handleApiError(error, validationErrors, errorMessage) {
     } else {
         errorMessage.value = "Er is een onverwachte fout opgetreden. We hebben een onverwerkte fout gevonden. Probeer het opnieuw. Als het probleem zich blijft voordoen, neem dan contact op met onze helpdesk op +31 517 412 986.";
     }
+    console.log(response)
 
     console.error("Er is een fout opgetreden:", error);
 }
